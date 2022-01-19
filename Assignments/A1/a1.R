@@ -5,7 +5,6 @@ library(scales)
 library(ineq) # For double checking
 setwd("C:/Users/boblin/Documents/GitHub/Econ613/Assignments/A1")
 
-### Exercise 1
 # Note that since R stores numbers in 32 bit integers or 64 bit double precision,
 # the maximum integer R can store as number is: 
 options(digits = 22) # set how much digit R should display when printing
@@ -16,6 +15,7 @@ options(digits = 22) # set how much digit R should display when printing
 # As a result, we shall store "idind", "idmen", and "profession" as character.
 options(digits = 7)
 
+### Exercise 1
 read_dathh <- function(filename){
   path <- paste("./Data/", filename, sep = "")
   return(
@@ -62,7 +62,13 @@ years[!temp_logic] # Duplicate idind are found in year 2013
 # Find errors source
 datind2013 <- read_datind("datind2013.csv")
 datind2013 %>% select(-idmen) %>% distinct() %>% check_unique_idind_row
-# Errors are from wrong idmen in datind2013
+# Errors are from wrong idmen in datind2013.
+duplicate_ind_logi <- duplicated(datind2013$idind)
+duplicate_ind <- datind2013 %>% filter(duplicate_ind_logi) %>% select(idind, idmen)
+duplicate_ind
+# Duplicate idind have different idmen.
+# In fact, idind already implictly contain its idmen (in the middle part of idind)
+# So we should find that the wrong idmen = true idmen + 1 
 
 ## 1.1
 temp_data <- read_dathh("dathh2007.csv")
@@ -197,6 +203,7 @@ filenames = paste(rep("datind", length(years)), years, ".csv", sep = "")
 data_ind <- map_dfr(filenames, read_datind) 
 data_ind_clear <- # delete duplicate data
   data_ind %>%  
+  arrange(idmen) %>% # distinct() select the first one of duplicates
   distinct(idind, year, .keep_all = TRUE)
 
 ## 2.1.2
@@ -379,7 +386,7 @@ left_join(datent_percentage, migration_percentage) %>%
 # since there is a gap between 2014 and 2015 if we use the other method,
 # which may result from the fact that the method uses "myear" before 2014 and "move" after 2014
 # and respondents may have different interpretation on the corresponding questions of the two variables.
-
+# Also, there are more missing values for "move" than for "datent", which may decrease the precision of the measurement of migration.  
 
 ## 3.5
 data_change_work_in_migration <- 
@@ -426,9 +433,9 @@ survival_number <-
   summarise(across(-idind, sum)) 
 survival_rate_year_by_year <- 
   survival_number %>% 
-  summarise(across(c("2005":"2019"), 
+  summarise(across(c("2004":"2018"), 
                    ~ select(survival_number, 
-                            paste("consecutive", cur_column(), sep = "_")) / . 
+                            grep(cur_column(), colnames(data_ind_dummies)) + length(2004:2018)) / . 
                    )) 
 attriion_rate_year_by_year <- 1 - survival_rate_year_by_year 
 colnames(attriion_rate_year_by_year) <- years[-1]
@@ -476,8 +483,8 @@ compute_attrition_rate <-
       select(year, attrition_rate) 
   return(attrition_rate)
   }
-# Take 2014 as an example
-compute_attrition_rate(2014,data_ind_dummies)
+# Take 2012 as an example
+compute_attrition_rate(2012,data_ind_dummies)
 
 # The whole table
 compute_attrition_rate_for_table <- function(base_years, data_id_dummies){
@@ -489,8 +496,11 @@ compute_attrition_rate_for_table <- function(base_years, data_id_dummies){
   
   table <- map_dfr(base_years, t_compute_attrition_rate, data_ind_dummies) %>% t()
   colnames(table) <- paste("base_years", base_years, sep = "_")
-  return(as_tibble(table))
+  table <- as_tibble(table) %>% mutate(year = years) %>% relocate(year)
+  return(table)
 }
 base_years = 2004:2018
-table <- compute_attrition_rate_for_table(base_years, data_ind_dummies)
-table
+attrition_rate_table <- compute_attrition_rate_for_table(base_years, data_ind_dummies)
+attrition_rate_table
+# Double check
+diag(as.matrix(attrition_rate_table)[2:length(years),1:length(base_years)+1]) == attriion_rate_year_by_year$attrition_rate_year_by_year
