@@ -59,16 +59,18 @@ filenames <- paste(rep("datind",length(years)), years, ".csv", sep = "")
 temp_file <- map(filenames, read_datind)
 temp_logic <- map_lgl(temp_file, check_unique_idind_row)
 years[!temp_logic] # Duplicate idind are found in year 2013
+
 # Find errors source
+# Errors are from wrong idmen in datind2013.
 datind2013 <- read_datind("datind2013.csv")
 datind2013 %>% select(-idmen) %>% distinct() %>% check_unique_idind_row
-# Errors are from wrong idmen in datind2013.
-duplicate_ind_logi <- duplicated(datind2013$idind)
-duplicate_ind <- datind2013 %>% filter(duplicate_ind_logi) %>% select(idind, idmen)
-duplicate_ind
+
 # Duplicate idind have different idmen.
 # In fact, idind already implictly contain its idmen (in the middle part of idind)
 # So we should find that the wrong idmen = true idmen + 1 
+duplicate_ind_logi <- duplicated(datind2013$idind)
+duplicate_ind <- datind2013 %>% filter(duplicate_ind_logi) %>% select(idind, idmen)
+duplicate_ind
 
 ## 1.1
 temp_data <- read_dathh("dathh2007.csv")
@@ -89,8 +91,7 @@ temp_data %>% filter(age >= 25 & age <= 35) %>% nrow()
 ## 1.5
 temp_data <- read_datind("datind2009.csv")
 temp_data %>%
-  group_by(profession, gender) %>%
-  summarize(n=n()) %>%
+  count(profession, gender) %>% 
   pivot_wider(names_from = gender,values_from = n)
 
 ## 1.6
@@ -170,14 +171,14 @@ datind2010 %>%
   scale_x_continuous(labels = label_comma(), limits = c(NA, 100000)) +
   scale_y_continuous(labels = label_comma()) 
 # Compare male and female wage with density
+# There is clear difference in wage distribution between male and female.
+# The distribution of female wage is more concentrated at low wage.
 datind2010 %>%
   filter(! is.na(wage)) %>% 
   ggplot(aes(x=wage, fill=gender, group=gender)) +
   geom_density(alpha =.4) +
   scale_x_continuous(labels = label_comma(), limits = c(NA, 100000)) +
   scale_y_continuous(labels = label_comma()) 
-# There is clear difference in wage distribution between male and female.
-# The distribution of female wage is more concentrated at low wage.
   
   
 ## 1.8
@@ -222,7 +223,10 @@ large_household <-
   distinct(idind, idmen, year) %>%
   count(idmen, year, sort = TRUE) %>%
   filter(n >= 4) 
+# Total frequency
 large_household %>% nrow()
+# Total distinct
+large_household %>% select(idmen) %>% n_distinct()
 # Count per year
 large_household %>% count(year) 
 
@@ -233,7 +237,10 @@ unemployed_household <-
   distinct(idind, idmen, year) %>%
   count(idmen, year, sort = TRUE) %>%
   filter(n >= 1) 
+# Total frequency
 unemployed_household %>% nrow()
+# Total distinct
+unemployed_household %>% select(idmen) %>% n_distinct()
 # Count per year
 unemployed_household %>% count(year) 
 
@@ -244,8 +251,11 @@ profession_household <-
   distinct(idind, idmen, year, profession) %>%
   count(idmen, year, profession, sort = TRUE) %>%
   filter(n >= 2) %>% 
-  distinct(idmen, year, n)
+  distinct(idmen, year)
+# Total frequency
 profession_household %>% nrow()
+# Total distinct
+profession_household %>% select(idmen) %>% n_distinct()
 # Count per year
 profession_household %>% count(year) 
 
@@ -254,7 +264,10 @@ kids_ind <-
   data_merged %>%
   filter(mstatus == "Couple, with Kids") %>%
   distinct(idind, year) 
+# Total frequency
 kids_ind %>% nrow()
+# Total distinct
+kids_ind %>% select(idind) %>% n_distinct()
 # Count per year
 kids_ind  %>% count(year) 
 
@@ -263,7 +276,10 @@ Paris_ind <-
   data_merged %>%
   filter(location == "Paris") %>%
   distinct(idind, year)
+# Total frequency
 Paris_ind %>% nrow()
+# Total distinct
+Paris_ind %>% select(idind) %>% n_distinct()
 # Count per year
 Paris_ind  %>% count(year) 
 
@@ -271,28 +287,23 @@ Paris_ind  %>% count(year)
 data_merged %>%
   distinct(idind, idmen, year) %>%
   count(idmen, year, sort = TRUE) %>%
-  slice_head() %>% 
-  pull(idmen) %>% 
-  as.character()
+  slice_max(n)
 
 ## 2.2.7
-household_2011_12 <- 
-  data_merged %>%
-  filter(year == 2010 | year == 2011) %>%
-  distinct(idmen, year) 
-household_2011_12 %>% nrow()
-# Count per year
-household_2011_12  %>% count(year) 
+household_2010 <- data_merged %>% filter(year == 2010) %>% pull(idmen) 
+household_2011 <- data_merged %>% filter(year == 2011) %>% pull(idmen) 
+household_2010_11 <- household_2010[household_2010 %in% household_2011]
+length(household_2010_11)
 
 ### Exercise 3
 ## 3.1
 # Note that there are 2 households that are in the "datind" data set but not in the "dathh" data set,
 data_ind %>% 
-  filter(! idmen %in% data_hh$idmen) %>% 
+  filter(! (idmen %in% data_hh$idmen)) %>% 
   distinct(idmen)
 # while all households in the "dathh" data set are in the "datind" data set.
 data_hh %>% 
-  filter(! idmen %in% data_ind$idmen) %>% 
+  filter(! (idmen %in% data_ind$idmen)) %>% 
   distinct(idmen)
 # Since the question focus on the households, we use the "dathh" data set , rather than the merged one.
 household_group <-
@@ -328,6 +339,7 @@ years_in_survey %>%
 # Plot the distributions of the time spent in the panel but consider different cases:
 # consecutive years: only count consecutive years and ignore any household with gap year
 # total years: count the total years a household spent in the panel regardless there is a gap year or not
+# They are roughly the same
 years_in_survey %>%
   filter(gap == FALSE) %>% 
   ggplot() + 
@@ -335,7 +347,6 @@ years_in_survey %>%
   geom_density(data = years_in_survey, aes(x = length, color="total years"), bw = 0.5) +
   scale_color_manual("", breaks=c("consecutive years", "total years"), values = c("blue","red")) +
   guides(color = guide_legend(override.aes = list(fill = c("blue", "red"))))
-# Roughly the same
 
 ## 3.2
 data_datent <-
@@ -378,33 +389,42 @@ migration_percentage %>%
 
 
 ## 3.4
-left_join(datent_percentage, migration_percentage) %>% 
-  ggplot(aes(x = year)) + 
-  geom_line(aes(y = datent_rate), color = "red") +
-  geom_line(aes(y = migration_rate), color = "blue") 
 # Prefer the method of using "datent" 
 # since there is a gap between 2014 and 2015 if we use the other method,
 # which may result from the fact that the method uses "myear" before 2014 and "move" after 2014
 # and respondents may have different interpretation on the corresponding questions of the two variables.
 # Also, there are more missing values for "move" than for "datent", which may decrease the precision of the measurement of migration.  
+# In addition, the definition of "move" is in fact different from the "datent" == year.
+# when considering an individual can exit and reenter the panel, the survey that "move" compare previous address from may be not the survey of last year. 
+left_join(datent_percentage, migration_percentage) %>% 
+  ggplot(aes(x = year)) + 
+  geom_line(aes(y = datent_rate), color = "red") +
+  geom_line(aes(y = migration_rate), color = "blue") 
 
 ## 3.5
-data_change_work_in_migration <- 
-  data_datent %>% 
-  filter(year_is_datent == TRUE) %>% 
+data_last_year_work <- 
+  data_datent %>%
   group_by(idind) %>%
-  mutate(cahnge_profession = n_distinct(profession, na.rm = TRUE) > 1 ) %>%
-  mutate(change_empstat = n_distinct(empstat, na.rm = TRUE) > 1) %>%
-  mutate(change_work = cahnge_profession | change_empstat) 
-change_work_in_migration <- 
-  data_change_work_in_migration %>%
+  mutate(year = year + 1, 
+         profession_last_year = profession,
+         empstat_last_year = empstat) %>% 
+  select(year, idind, profession_last_year, empstat_last_year) %>% 
+  right_join(data_datent, by = c("idind", "year"))
+data_change_work_by_year <- 
+  data_last_year_work %>%  
+  mutate(cahnge_profession_this_year = profession != profession_last_year) %>% 
+  mutate(change_empstat_this_year = empstat != empstat_last_year) %>% 
+  mutate(change_work_this_year = cahnge_profession_this_year | change_empstat_this_year) 
+change_work_migration_by_year <- 
+  data_change_work_by_year %>% 
   ungroup() %>% 
-  filter(change_work == TRUE) %>% 
-  distinct(idmen,year) 
-change_work_in_migration %>% nrow()
-# Count per year
-change_work_in_migration %>% count(year)
-  
+  filter(change_work_this_year == TRUE) %>% 
+  filter(year_is_datent == TRUE)
+
+change_work_migration_by_year %>% 
+  distinct(idmen,year) %>% 
+  count(year) 
+
 
 ### Exercise 4
 # We crate a dummies table indicating whether an individual is in the survey of certain year 
