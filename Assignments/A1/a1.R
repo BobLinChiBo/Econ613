@@ -149,36 +149,22 @@ datind2005 %>%
 
 ## 1.7
 datind2010 <- read_datind("datind2010.csv")
-# Readable density graphs (ignoring some extreme cases (wage > 100000))
 datind2010 %>% 
-  filter(! is.na(wage)) %>% 
-  ggplot(aes(x = wage)) + 
-  geom_density(bw = 5000) +
-  scale_x_continuous(labels = label_comma(), limits = c(NA, 100000)) +
-  scale_y_continuous(labels = label_comma()) 
-datind2010 %>%
-  filter(! is.na(wage)) %>% 
-  ggplot(aes(x = wage)) + 
-  geom_histogram(binwidth = 5000) +
-  scale_x_continuous(labels = label_comma(), limits = c(NA, 100000)) +
-  scale_y_continuous(labels = label_comma()) 
+  filter(! is.na(age)) %>% 
+  ggplot(aes(x = age)) + 
+  geom_density() 
 
 # Compare male and female wage with histogram
 datind2010 %>%
-  filter(! is.na(wage)) %>% 
-  ggplot(aes(x=wage, fill=gender)) +
-  geom_histogram(binwidth = 5000, position = "dodge") +
-  scale_x_continuous(labels = label_comma(), limits = c(NA, 100000)) +
-  scale_y_continuous(labels = label_comma()) 
-# Compare male and female wage with density
-# There is clear difference in wage distribution between male and female.
-# The distribution of female wage is more concentrated at low wage.
+  filter(! is.na(age)) %>% 
+  ggplot(aes(x=age, fill=gender)) +
+  geom_histogram(position = "dodge") 
+# Compare male and female age with density
+# The distribution of female age is more concentrated at higher age.
 datind2010 %>%
-  filter(! is.na(wage)) %>% 
-  ggplot(aes(x=wage, fill=gender, group=gender)) +
-  geom_density(alpha =.4) +
-  scale_x_continuous(labels = label_comma(), limits = c(NA, 100000)) +
-  scale_y_continuous(labels = label_comma()) 
+  filter(! is.na(age)) %>% 
+  ggplot(aes(x=age, fill=gender, group=gender)) +
+  geom_density(alpha =.4) 
   
   
 ## 1.8
