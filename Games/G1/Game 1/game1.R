@@ -26,9 +26,6 @@ data <- as.data.frame(a)
 data %>% ggplot(aes(x=V1,y=V2))+geom_line()
 
 # Exercise 2
-data2 <- read_csv("dat_choices.csv")
-data2 <- data2 %>% select(-...1)
-
 v1 <- c(48,48,48,0,40,64,52,16.97)
 v2 <- c(40,64,52,16.97,32,80,56,33.94)
 v3 <- c(32,80,56,33.94,24,96,60,50.91)
