@@ -1,0 +1,408 @@
+library(tidyverse)
+library(ggplot2)
+library(scales)
+
+read_datind <- function(filename){
+  path <- paste("./Data/", filename, sep = "")
+  return(
+    suppressMessages( # to suppress the message that arises from reading a column without name
+      read_csv(path, 
+               col_types = list(idind = "c", idmen = "c", profession = "c") # read "idind","idmen", and "profession" as character 
+      )) %>% 
+      mutate(across(c(idind, idmen, empstat, profession, gender), as_factor)) %>% # to reduce the size of data set  
+      select(!starts_with("...")) # remove first column
+  )
+}
+
+### Exercise 1
+datind2009 <- read_datind("datind2009.csv")
+datind2009_clear <- datind2009 %>% filter(!is.na(wage) & wage != 0)
+
+calculation <- function(y, X){
+  beta_hat <- solve(t(X) %*% X) %*% t(X) %*% y
+  y_hat <- X %*% beta_hat
+  error <- y - y_hat
+  S_square <- (t(error) %*% error / (length(y) - ncol(X)))[1,1]
+  var_beta <- S_square * solve(t(X) %*% X)
+  Std_Error <- sqrt(diag(var_beta))
+  regression_result <- matrix(c(beta_hat, t(Std_Error)), nrow = ncol(X), ncol = 2)
+  colnames(regression_result) = c("Coefficients", "Std_Error")
+  rownames(regression_result) = colnames(X)
+  return(regression_result)
+}
+
+construct_y_X <- function(data, outcome, regressors){
+  y <- data %>% select(outcome) %>% as.matrix()
+  X <- data %>% mutate(constant = 1) %>% select(constant, regressors) %>% as.matrix()
+  colnames(X) = c("constant", regressors)
+  y_X <- list(y, X)
+  return(y_X)
+}
+
+regression_result <- function(data, outcome, regressors){
+  y_X <- construct_y_X(data, outcome, regressors)
+  y <- y_X[[1]]
+  matrix_X <- y_X[[2]]
+  regression_result <- calculation(y, matrix_X)
+  return(regression_result)
+}
+
+reg_linear <- function(data, outcome, regressors){
+  regression_result <- regression_result(data, outcome, regressors)
+  return(compare_results_linear(data, type, outcome, regressors, regression_result))
+}
+
+compare_results_linear <- function(data, type, outcome, regressors, regression_result){
+  regressors_formula <- paste(regressors, collapse  = " + ")
+  formula <- paste(outcome, "~", regressors_formula, sep = " ")
+  formula <- as.formula(formula)
+  reg_lm <- lm(formula, data)
+  summary(reg_lm)$coefficients[, c("Estimate","Std. Error"), drop = FALSE]
+  estimates <- cbind(summary(reg_lm)$coefficients[, 1], summary(reg_lm)$coefficients[, 2], 
+                     regression_result[, 1], regression_result[, 2])
+  colnames(estimates) = c("LM : est","LM :se","own : est","own :se")
+  return(estimates)
+}
+
+
+bootstrap <- function(data, outcome, regressors, times){
+  samples <- lapply(rep(list(data), times), FUN = slice_sample, n = length(data$wage), replace = TRUE)
+  regression_results <- lapply(samples, regression_result, outcome = outcome, regressors = regressors)
+  number_regressors <- nrow(regression_results[[1]])
+  coefs_results <- lapply(regression_results, "[", 1:number_regressors, "Coefficients")
+  coefs <- transpose(coefs_results)
+  coefs <- lapply(coefs, unlist)
+  SD_coefs <- lapply(coefs, sd)
+  mean_coefs <- lapply(coefs, mean)
+  bootstrap_result <- matrix(c(mean_coefs, SD_coefs), ncol = 2)
+  colnames(bootstrap_result) =c("mean_coefficients", "Std_Error")
+  rownames(bootstrap_result) = c("intercept", regressors)
+  return(bootstrap_result)
+}
+
+
+
+
+## 1 
+y_X <- construct_y_X(datind2009_clear, "wage", "age")
+# warning since no variation on constant term
+correlation_result <- cor(y_X[[2]], y_X[[1]], use = "complete.obs")
+colnames(correlation_result) = "wage_correlation"
+rownames(correlation_result) = c("intercept", "age")
+correlation_result["intercept", "wage_correlation"] = 0
+correlation_result
+
+## 2
+lm_results <- reg_linear(datind2009_clear, "wage", "age")
+lm_results
+
+## 3
+# The estimated standard error of using the two strategies are different though the difference is not large.
+# The standard formulas of the OLS assume the variance of error term is homoskedastic and not autocorrelated.
+# However, bootstrap directly uses the information that the data brings. 
+bootstrap(datind2009_clear, "wage", "age", 49)
+bootstrap(datind2009_clear, "wage", "age", 499)
+lm_results
+
+
+### Exercise 2
+years <- 2005:2018
+filenames = paste(rep("datind", length(years)), years, ".csv", sep = "")
+data_ind <- map_dfr(filenames, read_datind)
+data_ind_clear <- 
+  data_ind %>% 
+  filter(age >= 18) %>% 
+  filter(!is.na(wage) & wage != 0) %>% 
+  mutate(year = as.factor(year)) %>% 
+  arrange(idmen) %>% 
+  distinct(idind, year, .keep_all = TRUE)
+
+
+## 1
+data_ind_age_group <- 
+  data_ind_clear %>% 
+  mutate(age_group = cut(age, c(18, 25, 30, 35, 40, 45, 50, 55, 60, max(age)), include.lowest = TRUE)) 
+
+## 2
+# Plot only those wage lower than 100,000 to make the graph readable 
+# We can see two features of this graph:
+# First, as age rises (until 60), the wage seems also rises.
+# First, as year passes, the wage seems also rises (except those older than 60).
+data_ind_age_group %>% 
+ggplot(aes(x = age_group, y = wage, fill = year)) +
+  geom_boxplot(position="dodge") +
+  scale_y_continuous(labels = label_comma(), limits = c(NA, 100000))
+
+## 3
+# Comparing the regression with the year fixed effect and the regression without,
+# we can see that for the regression with the year fixed effect,
+# age's coefficient decreases and intercept's coefficient increases.
+add_dummies <- function(var, data){
+  formula <- as.formula(paste("~ ", var , ""))
+  var_dummies <- model.matrix(formula, data)
+  data_dummies <- cbind(data, var_dummies[,-1])
+  return(data_dummies)
+}
+data_ind_year <- add_dummies("year", data_ind_clear)
+year_regressors <- paste("year", years[-1], sep = "")
+reg_linear(data_ind_year, "wage", c("age", year_regressors))
+reg_linear(data_ind_year, "wage", "age")
+
+
+
+
+### Exercise 3
+datind2007 <- read_datind("datind2007.csv")
+
+## 1
+datind2007_clear <- 
+  datind2007 %>% 
+  filter(empstat != "Inactive" & empstat != "Retired")
+
+## 2
+likelihood_probit_ind <- function(beta, y, matrix_X){
+  y_latent <- matrix_X %*% beta
+  prob_y_1 <- pnorm(y_latent)
+  prob_y_1[prob_y_1 > 0.9999] = 0.9999
+  prob_y_1[prob_y_1 < 0.0001] = 0.0001
+  return(prob_y_1)
+}
+
+likelihood_logit_ind <- function(beta, y, matrix_X){
+  y_latent <- matrix_X %*% beta
+  prob_y_1 <- exp(y_latent) / (1 + exp(y_latent))
+  prob_y_1[prob_y_1 > 0.9999] = 0.9999
+  prob_y_1[prob_y_1 < 0.0001] = 0.0001
+  return(prob_y_1)
+}
+
+log_likelihood <- function(beta, y, matrix_X, type){
+  if(type == "probit"){
+    prob_y_1 <- likelihood_probit_ind(beta, y, matrix_X)
+  }
+  else if(type == "logit"){
+    prob_y_1 <- likelihood_logit_ind(beta, y, matrix_X)
+  }
+  else{
+    return("type can only be either probit or logit")
+  }
+  log_likelihood <- sum(y * as.numeric(log(prob_y_1)) + (1-y) * as.numeric(log(1-prob_y_1)))
+  return(log_likelihood)
+}
+
+## 3
+max_log_likelihood <- function(data, type, y, matrix_X, times, beta_start_min, beta_start_max, best_guess = ""){
+  empty_list <- vector(mode = "list", length = times)
+  if(class(best_guess)=="character"){
+    start_points <- lapply(empty_list, function(x) runif(n = ncol(matrix_X), min = beta_start_min, max = beta_start_max))
+    results <- lapply(X = start_points, FUN = optim, 
+                      fn = log_likelihood,
+                      method = "BFGS",
+                      control = list(maxit = 1000, fnscale = -1),
+                      y = y, matrix_X = matrix_X, type = type)
+    logLik_results <- lapply(results, "[[", 2)
+    max_logLik <- max(unlist(logLik_results))
+    positions <- which(unlist(logLik_results) == max_logLik)
+    best_start_point <- start_points[[positions[1]]]
+  }
+  else{
+    best_start_point <- best_guess
+  }
+  best_result <- optim(best_start_point, 
+                       fn = log_likelihood, 
+                       method = "BFGS",
+                       control = list(maxit = 1000, fnscale = -1),
+                       y = y, matrix_X = matrix_X, type = type,
+                       hessian = TRUE)
+  return(best_result)
+}
+
+calculate_std <- function(best_result){
+  fisher_info_matrix = solve(-best_result$hessian)       
+  std_error  = sqrt(diag(fisher_info_matrix))
+  return(std_error)
+}
+
+compare_results <- function(data, type, outcome, regressors, best_result){
+  regressors_formula <- paste(regressors, collapse  = " + ")
+  formula <- paste(outcome, "~", regressors_formula, sep = " ")
+  formula <- as.formula(formula)
+  reg_glm <- glm(formula, family = binomial(link = type), data)
+  std_error <- calculate_std(best_result)
+  estimates <- cbind(summary(reg_glm)$coefficients[, 1], summary(reg_glm)$coefficients[, 2], best_result$par, std_error)
+  colnames(estimates) = c("GLM : est","GLM :se","own : est","own : se")
+  return(estimates)
+}
+
+reg_probit_logit <- function(data, type, outcome, regressors, times, beta_start_min, beta_start_max, best_guess = ""){
+  y_X <- construct_y_X(data, outcome, regressors)
+  best_result <- max_log_likelihood(data, type = type, y = y_X[[1]], matrix_X = y_X[[2]], 
+                     times = times, beta_start_min = beta_start_min, beta_start_max = beta_start_max, best_guess = best_guess)
+  compare_results(data, type, outcome, regressors, best_result)
+}
+
+
+datind2007_employ <-  datind2007_clear %>% mutate(employed =  empstat == "Employed")
+set.seed(123)
+reg_probit_logit(datind2007_employ, "probit", outcome = "employed", regressors = "age",
+                 times = 100, beta_start_min = -3, beta_start_max = 3)
+
+
+## 4
+# Conceptually, you cannot including wages as a determinant of labor market participation.
+# The reason is that if, and only if, people have positive wage then they are employed.
+# However, the data does show that some people are unemployed but with positive wage or are employed but with zero wage.
+datind2007_employ_wage <- 
+  datind2007_employ %>% 
+  mutate(positive_wage = wage > 0) %>% 
+  filter(!is.na(wage))
+datind2007_employ_wage %>%
+  count(employed, positive_wage) %>% 
+  pivot_wider(names_from = employed, values_from = n)
+set.seed(123)
+reg_probit_logit(datind2007_employ_wage, "probit", outcome = "employed", regressors = c("age", "wage"),
+                 times = 100, beta_start_min = -0.4, beta_start_max = 0.4)
+
+
+
+
+
+### Exercise 4
+years <- 2005:2015
+filenames = paste(rep("datind", length(years)), years, ".csv", sep = "")
+data_ind <- map_dfr(filenames, read_datind)
+
+## 1
+data_ind_clear <- 
+  data_ind %>% 
+  filter(empstat != "Inactive" & empstat != "Retired") %>% 
+  mutate(year = as.factor(year)) %>% 
+  arrange(idmen) %>% 
+  distinct(idind, year, .keep_all = TRUE)
+
+## 2
+data_ind_year <- add_dummies("year", data_ind_clear) %>% mutate(employed =  empstat == "Employed")
+year_regressors <- paste("year", years[-1], sep = "")
+set.seed(123)
+logit_results <- reg_probit_logit(data_ind_year, "logit", outcome = "employed", regressors = c("age", year_regressors),
+                 times = 10, beta_start_min = -1, beta_start_max = 1)
+set.seed(123)
+probit_results <- reg_probit_logit(data_ind_year, "probit", outcome = "employed", regressors = c("age", year_regressors),
+                 times = 10, beta_start_min = -1, beta_start_max = 1)
+
+# logit
+logit_results
+# probit
+probit_results
+# linear
+reg_linear(data_ind_year, "employed", c("age", year_regressors))
+
+## 3
+# The results of the three methods have some differences, 
+# which are normal since the coefficients of the three methods have different meaning.
+# However, one can find that the signs of the coefficients are pretty consistent across the three methods.
+# Positive (negative) sign suggest that the variable has positive (negative) effect on labor market participation.
+# In particular, the coefficients of linear probability model can be interpreted as 
+# the change of probability of labor market participation resulted from one unit change of the corresponded variables.
+# For coefficients of year in linear probability model, they should be interpreted as 
+# how much probability increases/decreases in this year compared the with base year (2005).
+# As for significance, I calculate z score and use 5% as critical value, see below
+z <-  logit_results[, "own : est"] / logit_results[, "own : se"]
+sig <- abs(z) > 1.96
+logit_results_sig <- cbind(logit_results, z, sig)
+logit_results_sig
+
+z <-  probit_results[, "own : est"] / probit_results[, "own : se"]
+sig <- abs(z) > 1.96
+probit_results_sig <- cbind(probit_results, z, sig)
+probit_results_sig
+
+### Exercise 5
+## 1
+marginal_effect_var <- function(var, type, y, matrix_X, coefficients, method){
+  if(type == "probit"){  
+    likelihood_fun <- "likelihood_probit_ind"
+  }
+  else if (type == "logit"){  
+    likelihood_fun <- "likelihood_logit_ind"
+  }
+  if(method == "at_mean"){
+    new_X <- t(colMeans(matrix_X))
+  }
+  else if(method == "average"){
+    new_X <- matrix_X
+  }
+  if(grepl("year*",var)){
+    new_X[, grep("year*", colnames(new_X))] = 0
+    new_X[, var] = 1
+    likelihood_h <- get(likelihood_fun)(beta = coefficients, y = y, matrix_X = new_X)
+    new_X[, var] = 0
+    h_likelihood <- get(likelihood_fun)(beta = coefficients, y = y, matrix_X = new_X)
+    marginal_effect_var <- mean((likelihood_h - h_likelihood))
+  }
+  else{
+    h <-  new_X * 0
+    h[, var] <- 1 / 1000000
+    likelihood_h <- get(likelihood_fun)(beta = coefficients, y = y, matrix_X = new_X  + h)
+    h_likelihood <- get(likelihood_fun)(beta = coefficients, y = y, matrix_X = new_X  - h)
+    likelihood <- get(likelihood_fun)(beta = coefficients, y = y, matrix_X = new_X)
+    marginal_effect_var <- mean((likelihood_h - h_likelihood) / (2*h[, var]))
+  }
+  return(marginal_effect_var)
+}
+
+
+marginal_effect <- function(data, type, outcome, regressors, coefficients, method){
+  y_X <- construct_y_X(data, outcome, regressors)
+  marginal_effect <- sapply(regressors, marginal_effect_var, 
+                            type = type, y = y_X[[1]], matrix_X = y_X[[2]], coefficients, method = method)
+  marginal_effect <- as.matrix(marginal_effect, ncol = 1)
+  colnames(marginal_effect) = "marginal_effect"
+  return(marginal_effect)
+}
+
+margin_logit_own <- marginal_effect(data_ind_year, "logit", "employed", c("age", year_regressors), logit_results[,"own : est"], method = "average")
+margin_probit_own <- marginal_effect(data_ind_year, "probit", "employed", c("age", year_regressors), probit_results[,"own : est"], method = "average")
+
+#check
+library(margins)
+glm_logit <- glm(employed ~ age + year,family = binomial(link = "logit"), data = data_ind_year)
+margin_logit <- margins(glm_logit)
+margin_logit <- summary(margin_logit)
+margin_logit
+margin_logit_own
+glm_probit <- glm(employed ~ age + year,family = binomial(link = "probit"), data = data_ind_year)
+margin_probit <- margins(glm_probit)
+margin_probit <- summary(margin_probit)
+margin_probit
+margin_probit_own
+
+
+## 2
+bootstrap_marginal_effect <- function(data, type, outcome, regressors, method, times, best_guess){
+  samples <- lapply(rep(list(data), times), FUN = slice_sample, n = nrow(data), replace = TRUE)
+  regression_results <- lapply(samples, reg_probit_logit,
+                               type = type, outcome = outcome, regressors = regressors, times = 2, beta_start_min = -1, beta_start_max = 1, best_guess = best_guess)
+  number_regressors <- nrow(regression_results[[1]])
+  best_coefficients_results <- lapply(regression_results, "[", 1:number_regressors, "own : est")
+  best_coefficients <- lapply(best_coefficients_results, unlist)
+  marginal_effect_results <- mapply(marginal_effect, data = samples, coefficients = best_coefficients, 
+                                    type = type, outcome = outcome, regressors = list(regressors), method = method, SIMPLIFY = FALSE)
+  coefs <- transpose(marginal_effect_results)
+  coefs <- lapply(coefs, unlist)
+  SD_coefs <- lapply(coefs, sd)
+  mean_coefs <- lapply(coefs, mean)
+  bootstrap_result <- matrix(c(mean_coefs, SD_coefs), ncol = 2)
+  colnames(bootstrap_result) = c("marginal_effect", "Std_Error")
+  rownames(bootstrap_result) = regressors
+  return(bootstrap_result)
+}
+set.seed(123)
+bootstrap_marginal_effect(data_ind_year, type = "logit", "employed", c("age", year_regressors),
+                          method = "average",times = 49, best_guess = logit_results[,"own : est"])
+set.seed(123)
+bootstrap_marginal_effect(data_ind_year, type = "probit", "employed", c("age", year_regressors),
+                          method = "average",times = 49, best_guess = probit_results[,"own : est"])
+
+
+
