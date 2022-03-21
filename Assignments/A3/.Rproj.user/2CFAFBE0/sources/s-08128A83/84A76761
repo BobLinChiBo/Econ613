@@ -1,27 +1,27 @@
 {
-    "id": "7FF9E7E5",
-    "path": "~/GitHub/Econ613/Assignments/A3/a3.R",
-    "project_path": "a3.R",
+    "id": "84A76761",
+    "path": "~/GitHub/Econ613/Assignments/A3/a3F.R",
+    "project_path": "a3F.R",
     "type": "r_source",
-    "hash": "358257826",
+    "hash": "3204495554",
     "contents": "",
     "dirty": false,
-    "created": 1646955362775.0,
+    "created": 1647895668220.0,
     "source_on_save": false,
-    "relative_order": 1,
+    "relative_order": 13,
     "properties": {
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "336,0",
-        "scrollLine": "316"
+        "cursorPosition": "343,98",
+        "scrollLine": "323"
     },
     "folds": "",
-    "lastKnownWriteTime": 1647795416,
+    "lastKnownWriteTime": 1647896678,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1647795416623,
+    "last_content_update": 1647896678717,
     "read_only": false,
     "read_only_alternatives": []
 }
