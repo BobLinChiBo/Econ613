@@ -2,7 +2,8 @@ library(tidyverse)
 library(ggplot2)
 library(scales)
 library(mlogit)
-options(digits=7)
+library(foreign)
+options(digit=20)
 # Read Data
 ind_choice <- read_csv("./Data/datstu_v2.csv")
 school_loc <- read_csv("./Data/datsss.csv")
@@ -151,17 +152,17 @@ ind_school_loc_distance <-
 ### 4
 ind_recode <- 
   ind_school_program_enter %>% 
-  mutate(scode_rev = substr(schoolcode, 1, 1),
-         pgm_rev = ifelse(choicepgm == "General Arts" | choicepgm == "Visual Arts", "arts", "others"),
-#                          ifelse(choicepgm == "Business" | choicepgm == "Home Economics", "economics",
-#                                 ifelse(choicepgm == "General Science", "science", "others"))),
+  mutate(scode_rev = substr(schoolcode, 1, 3),
+         pgm_rev = ifelse(choicepgm == "General Arts" | choicepgm == "Visual Arts", "arts",  
+                          ifelse(choicepgm == "Business" | choicepgm == "Home Economics", "economics",
+                                 ifelse(choicepgm == "General Science", "science", "others"))),
          choice_rev = paste(scode_rev, pgm_rev, sep = "_"))
 choice_rev <- 
   school_program %>% 
-  mutate(scode_rev = substr(schoolcode, 1, 1),
-         pgm_rev = ifelse(choicepgm == "General Arts" | choicepgm == "Visual Arts", "arts", "others"),
-#                          ifelse(choicepgm == "Business" | choicepgm == "Home Economics", "economics",
-#                                 ifelse(choicepgm == "General Science", "science", "others"))),
+  mutate(scode_rev = substr(schoolcode, 1, 3),
+         pgm_rev = ifelse(choicepgm == "General Arts" | choicepgm == "Visual Arts", "arts", 
+                          ifelse(choicepgm == "Business" | choicepgm == "Home Economics", "economics",
+                                 ifelse(choicepgm == "General Science", "science", "others"))),
          choice_rev = paste(scode_rev, pgm_rev, sep = "_")) %>% 
   select(scode_rev, pgm_rev, choice_rev) %>% 
   distinct()
@@ -200,101 +201,157 @@ add_dummies <- function(data, factor, other_var = ""){
   new_data <- as_tibble(factor_dummies[, -1])
   return(new_data)
 }
-likelihood_logit_ind <- function(X_n, coefficients, choices, type){
+choices_utility <- function(coefficients, data, choices, type, h = 0, change_by_choice = 0, change_var = ""){
   if(type == "conditional"){
-    data <- as.matrix(X_n)
+    new_data <- as.matrix(data[, 1:nrow(choices)])
   }
   else if(type == "multinomial"){
-    data <- as.matrix(X_n[, 1:length(X_n)-1])
+    new_data <- as.matrix(data[, 1:((nrow(choices)-1)*2)])
   }
-  utility_n <- data %*% coefficients
-  data[1, 1:length(X_n)-1] = 0
-  sum_exp_utility_n <- exp(data %*% coefficients)
-  for (i in 1:nrow(choices)) {
-    data[1, 1:length(X_n)-1] = 0
-    data[1, i] = 1
+  result_data <- data
+  change_data <- new_data
+  change_data[, (nrow(choices)):ncol(change_data)][change_data[, (nrow(choices)):ncol(change_data)] > 0] = h
+  change_data[, 1:(nrow(choices)-1)] = 0
+  new_data = new_data + change_data
+  chosen_utility <- new_data %*% coefficients
+  result_data["chosen_utility"] = chosen_utility
+  if(type == "conditional"){
+    new_data[, 1:nrow(choices)-1] = 0
+    if(change_by_choice != 0){
+      new_data[, nrow(choices)] = as.matrix(data)[,nrow(choices) + 1]
+    }
+    if(change_by_choice != 0 & change_var != ""){
+      new_h = h * as.numeric((choices[1,1] == change_var))
+    }
+    else{new_h = h}
+    new_data[, nrow(choices)] = new_data[, nrow(choices)] + new_h
+  }
+  else if(type == "multinomial"){
+    new_data[,] = 0
+  }
+  result_data[paste("utility", choices[1,1], sep = "_")] = new_data %*% coefficients
+  for(i in 2:(nrow(choices))){
+    new_data[,] = 0
+    new_data[, i-1] = 1
     if(type == "multinomial"){
-      data[1, nrow(choices)+i] = as.numeric(X_n[1, length(X_n)])
+      new_data[, nrow(choices)-2+i] = as.matrix(data)[, ncol(new_data)+1] + h 
     }
-    else if(type == "multinomial"){
-      data[1, length(X_n)] = as.numeric(X_n[1, length(X_n)])
+    else if(type == "conditional"){
+      if(change_by_choice != 0){
+        if(change_var != ""){
+          new_h = h * as.numeric((choices[i,1] == change_var))
+        }
+        else{new_h = h}
+        new_data[, nrow(choices)] = as.matrix(data)[, nrow(choices) + i] + new_h
+      }
+      else{
+        new_data[, nrow(choices)] = as.matrix(data)[, nrow(choices)] + h
+      }
     }
-    sum_exp_utility_n = sum_exp_utility_n + exp(data %*% coefficients)
+    choice_utility <- new_data %*% coefficients
+    result_data[paste("utility", choices[i,1], sep = "_")] = choice_utility
   }
-  prob_y_n <- exp(utility_n) / sum_exp_utility_n
-  prob_y_n[prob_y_n > 0.9999] = 0.9999
-  prob_y_n[prob_y_n < 0.0001] = 0.0001
-  return(prob_y_n)
+  return(result_data)
 }
-likelihood_logit <- function(coefficients, data, choices, type){
-  data.list <- split(data, seq(nrow(data)))
-  prob_y <- sapply(data.list, likelihood_logit_ind, coefficients = coefficients, choices = choices, type = type)
+find_index <- function(name, add_before, sep, data){
+  pattern <- paste(add_before, name, sep = sep)
+  return(grep(pattern, colnames(data)))
+}
+choices_prob <- function(result_data, choices){
+  index <- sapply(choices %>% pull(1), find_index, add_before = "utility", sep = "_", data = result_data)
+  result_data <- result_data %>% mutate(sum_exp_utility = rowSums(across(.cols = all_of(index), .fns = exp)))
+  result_data <- result_data %>% mutate(across(all_of(index), function(x) exp(x)/sum_exp_utility))
+  chosen_prob <- with(result_data, exp(chosen_utility) / sum_exp_utility)
+  chosen_prob[chosen_prob > 0.99999] = 0.99999
+  chosen_prob[chosen_prob < 0.00001] = 0.00001
+  result_data["chosen_prob"] = chosen_prob
+  for (choice in choices %>% pull(1)) {
+    colnames(result_data)[which(names(result_data) == choice)] = paste("choice_prob", choice, sep = "_")
+    assign("choice_prob",   with(result_data, get(paste("choice_prob", choice, sep = "_"))))
+    choice_prob[choice_prob > 0.99999] = 0.99999
+    choice_prob[choice_prob < 0.00001] = 0.00001
+    result_data[paste("choice_prob", choice, sep = "_")] =  choice_prob
+  }
+  return(result_data %>% select(starts_with("choice_prob"), "chosen_prob"))
+}
+likelihood_logit_all <- function(coefficients, data, choices, type, h = 0, change_by_choice = 0, change_var = ""){
+  result_data <- choices_utility(coefficients = coefficients, data = data, choices = choices,
+                                 type = type, h = h, change_by_choice = change_by_choice, change_var = change_var)
+  prob_data <- choices_prob(result_data = result_data, choices = choices)
+  return(prob_data)
+}
+likelihood_logit <- function(coefficients, data, choices, type, h = 0, change_by_choice = 0){
+  result_data <- likelihood_logit_all(data = data, coefficients = coefficients, choices = choices, type = type, h = h, change_by_choice = change_by_choice)
+  prob_y <- result_data %>% pull(chosen_prob)
   return(prob_y)
 }
-log_likelihood_logit <- function(coefficients, data, choices, type){
-  prob_y <- likelihood_logit(coefficients = coefficients, data = data, choices = choices, type = type)
+log_likelihood_logit <- function(coefficients, data, choices, type, change_by_choice = 0){
+  prob_y <- likelihood_logit(coefficients = coefficients, data = data, choices = choices, type = type, change_by_choice = change_by_choice)
   log_likelihood <- sum(log(prob_y))
   return(log_likelihood)
 }
-max_log_likelihood <- function(data, choices, times, beta_start_min, beta_start_max, best_guess = "", type){
+max_log_likelihood <- function(data, choices, times, beta_start_min, beta_start_max, best_guess = "", type, change_by_choice = 0){
   if(times == 1){
     best_start_point <- runif(n = ncol(data), min = beta_start_min, max = beta_start_max)
   }
   else{
-  empty_list <- vector(mode = "list", length = times)
-  if(class(best_guess) == "character"){
-    start_points <- lapply(empty_list, function(x) runif(n = ncol(data), min = beta_start_min, max = beta_start_max))
-    results <- lapply(X = start_points, FUN = optim, 
+    empty_list <- vector(mode = "list", length = times)
+    if(class(best_guess) == "character"){
+      start_points <- lapply(empty_list, function(x) runif(n = ncol(data), min = beta_start_min, max = beta_start_max))
+      results <- lapply(X = start_points, FUN = optim, 
                       fn = log_likelihood_logit,
                       method = "BFGS",
                       control = list(maxit = 1000, fnscale = -1),
-                      data = data, choices = choices, type = type)
-    logLik_results <- lapply(results, "[[", 2)
-    max_logLik <- max(unlist(logLik_results))
-    positions <- which(unlist(logLik_results) == max_logLik)
-    best_start_point <- start_points[[positions[1]]]
+                      data = data, choices = choices, type = type, change_by_choice = change_by_choice)
+      logLik_results <- lapply(results, "[[", 2)
+      max_logLik <- max(unlist(logLik_results))
+      positions <- which(unlist(logLik_results) == max_logLik)
+      best_start_point <- start_points[[positions[1]]]
+    }
+    else{
+      best_start_point <- best_guess
+    }
   }
-  else{
-    best_start_point <- best_guess
-  }}
   best_result <- optim(best_start_point, 
                        fn = log_likelihood_logit, 
                        method = "BFGS",
                        control = list(trace=6, maxit = 1000, fnscale = -1),
-                       data = data, choices = choices, type = type,
-                       hessian = TRUE)
+                       data = data, choices = choices, type = type, change_by_choice = change_by_choice,
+                       hessian = FALSE)
   return(best_result)
 }
 
+# multinomial logistic regression
+# utility = alpha_choice + beta_score_choice * score
 # choice_rev ~ 0 | score
-#rm(list=setdiff(ls(), "ind_recode"))
 ind_recode_score_first <- 
   ind_recode %>% 
   filter(school_rank == 1 & program_rank == 1 & !is.na(scode_rev) & !is.na(choice_rev)) %>% 
   select(score, choice_rev, scode_rev, pgm_rev) %>% 
   na.omit
+set.seed(123)
 ind_recode_score_first.sample <- 
   ind_recode_score_first %>% 
-  slice(sample(nrow(ind_recode_score_first), size = nrow(ind_recode_score_first)/100, replace = FALSE))
+  slice(sample(nrow(ind_recode_score_first), size = nrow(ind_recode_score_first)/250, replace = FALSE))
+write.dta(ind_recode_score_first.sample, "q5_sample_stata.dta")
 ind_recode_score_first_mlogit <- 
   ind_recode_score_first.sample %>% 
   select(score, choice_rev) %>% 
   mlogit.data(choice = "choice_rev", shape = "wide") 
-mlogit_result_q5 <- mlogit(choice_rev ~ 0 | score, data = ind_recode_score_first_mlogit)
+mlogit_result_q5 <- mlogit(choice_rev ~ 1 | score, data = ind_recode_score_first_mlogit)
 best_guess_q5 <- summary(mlogit_result_q5)$coefficients
 choices_q5 <-
   ind_recode_score_first.sample %>% 
   select(choice_rev) %>% 
   distinct() %>% 
   arrange(choice_rev) 
-choices_no_head_q5 <- 
-  choices_q5 %>% slice(-1)
 ind_recode_score_first_d.sample <- 
   ind_recode_score_first.sample %>% 
   add_dummies(factor = "choice_rev", other_var = "score") %>% 
   select(-score, score)
+set.seed(123)
 own_result_q5 <- max_log_likelihood(data = ind_recode_score_first_d.sample, 
-                                 choices = choices_no_head_q5, times = 10, 
+                                 choices = choices_q5, times = 10, 
                                  beta_start_min = -1, beta_start_max = 1, best_guess = best_guess_q5,
                                  type = "multinomial")
 estimates_q5 <- cbind(best_guess_q5, own_result_q5$par)
@@ -302,245 +359,116 @@ colnames(estimates_q5) = c("mlogit : est","own : est")
 estimates_q5
 
 # marginal effect
-choice_mean <- function(chosen, choice_var, mean_var, data){
-  result <- data %>% filter(eval(parse(text=choice_var)) == chosen) %>% pull(mean_var) 
-  return(mean(result))
-  }
-choices_prob_mean <- function(choices, coefficients, mean_data, type){
-  sum_exp_utility_mean <- 0
-  choices <- choices %>% pull(1)
-  for (chosen in choices) {
-    chosen_index <- grep(chosen, choices)
-    chosen_index_string <- paste("utility", chosen_index, sep = "")
-    if(type == "multinomial"){
-      if(chosen_index == 1){
-        utility <- 0
-      }
-      else{
-        utility <- coefficients[chosen_index-1] + mean_data[chosen, 1] * coefficients[ length(coefficients)/2 + chosen_index-1 ]
-      }
-    }
-    else if(type == "conditional"){
-      print(mean_data[chosen, 1])
-      print(coefficients[length(coefficients)])
-      if(chosen_index == 1){
-        utility <- mean_data[chosen, 1] * coefficients[length(coefficients)]
-      }
-      else{
-        print(coefficients[chosen_index-1])
-        utility <- coefficients[chosen_index-1] + mean_data[chosen, 1] * coefficients[length(coefficients)]
-      }
-      print(utility)
-    }
-    assign(chosen_index_string, utility)
-    sum_exp_utility_mean = sum_exp_utility_mean + exp(utility)
-  }
-  choices_prob_mean <- mean_data 
-  colnames(choices_prob_mean) = "prob_at_mean"
-  i <- 1
-  for (chosen in choices) {
-    choices_prob_mean[i, "prob_at_mean"] = exp(get(paste("utility", i, sep = ""))) / sum_exp_utility_mean
-    i = i + 1
-  }
-  return(choices_prob_mean)
+marginal_effect_average <- function(change_var = "", coefficients, data, choices, type, h, change_by_choice = 0, choice_wise = 0){
+  h_likelihood <- likelihood_logit_all(coefficients = coefficients, data = data, 
+                                       choices = choices, type = type, h = h, 
+                                       change_by_choice = change_by_choice, change_var = change_var) 
+  likelihood_h <- likelihood_logit_all(coefficients = coefficients, data = data, 
+                                       choices = choices, type = type, h = -h,
+                                       change_by_choice = change_by_choice, change_var = change_var)
+  marginal_effect_ind <- (h_likelihood - likelihood_h) / (2*h)
+  marginal_effect_average <- 
+    marginal_effect_ind %>% summarise_all(mean) %>% 
+    select(starts_with("choice_prob")) %>% t()
+  colnames(marginal_effect_average) = "average_marginal_effect"
+  return(marginal_effect_average)
 }
-marginal_effect <- function(choices, coefficients, mean_data, type){
-  h <- 1/1000
-  h_prob <- choices_prob_mean(coefficients = coefficients, choices = choices, mean_data = mean_data + h, type = type)
-  prob_h <- choices_prob_mean(coefficients = coefficients, choices = choices, mean_data = mean_data - h, type = type)
-  marginal_effect <- (h_prob - prob_h) / (2*h)
-  colnames(marginal_effect) = "marginal_effect"
-  return(marginal_effect)
-}
-choices_mean_q5 <- 
-  sapply(choices_q5 %>% pull(choice_rev), choice_mean, 
-         data = ind_recode_score_first.sample, 
-         choice_var = "choice_rev", mean_var = "score") %>% 
-  as.data.frame()
-colnames(choices_mean_q5) = "score"
-own_marginal_effect_q5 <- marginal_effect(coefficients = own_result_q5$par, choices = choices_q5, mean_data = choices_mean_q5)
-mlogit_marginal_effect_q5 <- effects(mlogit_result_q5, covariate = "score", data = choices_mean_q5) %>% as.data.frame()
-marginal_effect_q5 <- cbind(own_marginal_effect_q5, mlogit_marginal_effect_q5)
-colnames(marginal_effect_q5) = c("own_marginal_effect", "mlogit_marginal_effect")
-marginal_effect_q5
-
+own_marginal_effect_average_q5 <- 
+  marginal_effect_average(coefficients = own_result_q5$par, data = ind_recode_score_first_d.sample, choices = choices_q5, type = "multinomial", h = 1/1000) 
+own_marginal_effect_average_q5
 
 ### 6
-# choice_rev ~ school_quality 
+# conditional logistic regression
+# utility = alpha_choice + beta_quality * quality
+# choice_rev ~ quality 
+# Define (relative) quality = average program quality in choice rev / individual score
 ind_recode_quality_first <- 
   ind_recode %>% 
   filter(school_rank == 1 & program_rank == 1 & !is.na(scode_rev) & !is.na(pgm_rev)) %>% 
+  select(index, score, choice_rev, schoolcode, choicepgm) %>% 
   left_join(recode_quality, by = "choice_rev") %>% 
-  select(recode_quality, choice_rev) %>% 
+  mutate(relative_quality = recode_quality / score) %>% 
   na.omit
+set.seed(123)
 ind_recode_quality_first.sample <- 
   ind_recode_quality_first %>% 
-  slice(sample(nrow(ind_recode_quality_first), size = nrow(ind_recode_quality_first)/100, replace = FALSE))
-#ind_recode_quality_first_mlogit <- 
-#  ind_recode_quality_first %>% 
-#  select(recode_quality, choice_rev) %>% 
-#  mlogit.data(choice = "choice_rev", shape = "wide") 
-#mlogit_result <- mlogit(choice_rev ~ recode_quality | 1 | 0, data = ind_recode_quality_first_mlogit)
-#best_guess_q6 <- summary(mlogit_result)$coefficients
-ind_recode_quality_first_d.sample <- 
-  ind_recode_quality_first.sample %>% 
-  add_dummies(factor = "choice_rev") %>% 
-  mutate(recode_quality = ind_recode_quality_first.sample$recode_quality) 
+  slice(sample(nrow(ind_recode_quality_first), size = nrow(ind_recode_quality_first)/250, replace = FALSE))
 choices_q6 <-
   ind_recode_quality_first.sample %>% 
   select(choice_rev) %>% 
   distinct() %>% 
   arrange(choice_rev) 
-choices_no_head_q6 <- 
-  choices_q6 %>% slice(-1)
+temp_quality_first_mlogit <- 
+  ind_recode_quality_first.sample %>% 
+  select(score, choice_rev) %>% 
+  mlogit.data(choice = "choice_rev", shape = "wide") 
+reshape_temp_quality_first_mlogit <- 
+  temp_quality_first_mlogit %>% as_tibble %>% select(1:4)%>% 
+  rename(dummy = choice_rev, choice_rev = alt) %>% 
+  left_join(recode_quality, by = "choice_rev") %>% 
+  mutate(relative_quality = recode_quality / score) %>% 
+  rename(id = chid)
+#write.dta(reshape_temp_quality_first_mlogit, "q6_sample_stata.dta")
+reshape_quality_first_mlogit <- 
+  dfidx(reshape_temp_quality_first_mlogit, idx = c("id", "choice_rev"))
+mlogit_result_q6 <- mlogit(dummy ~ relative_quality , data = reshape_quality_first_mlogit)
+best_guess_q6 <- summary(mlogit_result_q6)$coefficients
+ind_recode_quality_first_d.sample <- 
+  ind_recode_quality_first.sample %>% 
+  add_dummies(factor = "choice_rev") %>% 
+  mutate(relative_quality = ind_recode_quality_first.sample$relative_quality) 
+for(choice in choices_q6 %>% pull(1)){
+  recode_quality_each <- recode_quality[recode_quality["choice_rev"] == choice, "recode_quality"] %>% pull(1)
+  ind_recode_quality_first_d.sample[paste("relative_quality_by", choice, sep = "_")] = recode_quality_each / ind_recode_quality_first.sample$score
+  }
+set.seed(123)
 own_result_q6 <- max_log_likelihood(data = ind_recode_quality_first_d.sample, 
-                        choices = choices_no_head_q6, times = 1, 
-                        beta_start_min = -1, beta_start_max = 1, type = "conditional")
-own_result_q6_readable <- 
-  choices_no_head_q6 %>% 
-  rename(term = choice_rev) %>% 
-  mutate(coefficients = own_result_q6$par[1:length(own_result_q6$par)-1]) %>% 
-  add_case(term = "recode_quality", coefficients = own_result_q6$par[length(own_result_q6$par)])
-own_result_q6_readable
-choices_mean_q6 <- 
-  sapply(choices_q6 %>% pull(choice_rev), choice_mean, 
-         data = ind_recode_quality_first.sample, 
-         choice_var = "choice_rev", mean_var = "recode_quality") %>% 
-  as.data.frame()
-colnames(choices_mean_q6) = "recode_quality"
-all_mean <- ind_recode_quality_first.sample %>% pull(recode_quality) %>% mean()
-choices_mean_q6 <- choices_mean_q6 %>% mutate(recode_quality = all_mean) 
-own_marginal_effect_quality_q6 <- marginal_effect(coefficients = own_result_q6$par, choices = choices_q6, mean_data = choices_mean_q6, type = "conditional")
-own_marginal_effect_quality_q6
-
+                        choices = choices_q6, times = 3, 
+                        beta_start_min = -1, beta_start_max = 1, type = "conditional",
+                        best_guess = best_guess_q6, change_by_choice = 1)
+estimates_q6 <- cbind(best_guess_q6, own_result_q6$par)
+colnames(estimates_q6) = c("mlogit : est","own : est")
+estimates_q6
+own_marginal_effect_average_q6 <- lapply(choices_q6 %>% pull(1), marginal_effect_average,
+       coefficients = own_result_q6$par, data = ind_recode_quality_first_d.sample, 
+       choices = choices_q6, type = "conditional", h = 1/1000, 
+       change_by_choice = 1, choice_wise = 1) %>% as.data.frame()
+rownames(own_marginal_effect_average_q6) = paste("relative_quality_change_in", choices_q6 %>% pull(1) ,sep = "_")
+colnames(own_marginal_effect_average_q6) = paste("marginal_effect_on_prob", choices_q6 %>% pull(1) ,sep = "_")
+own_marginal_effect_average_q6[1:5, 1:5]
 
 ### 7
 # Using model 2 would be more appropriate to see the effect of excluding "others".
 # Model 2 studies the effect school-program quality on students' choices.
 # When excluding "others", the relative school-program quality changes.
-# Hence, we can see if such change have influence on the effect school-program quality on students' choices.
+# Hence, we can see if such change has influence on the probability of students' choices.
 # On the other hand, model 1 studies the effect of each student's own score on his choice.
-# In particular, the model studies whether student choosing certain choices have higher or lower scores.
+# In particular, the model studies whether student choosing certain choices have higher or lower scores compared with the base choice.
 # Then, excluding "others" and comparing the results does not give much economic sense.
-
-data <- ind_recode_quality_first_d.sample
-data.list <- split(data, seq(nrow(data)))
-prob_y <- sapply(data.list, likelihood_logit_ind, coefficients = own_result_q6, choices = choices_no_head_q6)
-ind_recode_prob <- cbind(ind_recode, prob_y)
-
-ind_recode_quality_first_ex.sample <- 
-  ind_recode_quality_first.sample %>% 
-  filter(! pgm_rev == "other") 
-
-ind_recode_quality_first_d_ex.sample <- 
-  ind_recode_quality_first_ex.sample %>% 
-  select(school_quality, choice_rev) %>% 
-  add_dummies(factor = "choice_rev") %>% 
-  mutate(school_quality = ind_recode_quality_first.sample$school_quality)
-choices_q6_ex <-
-  ind_recode_quality_first_ex.sample %>% 
-  select(choice_rev) %>% 
-  distinct() %>% 
-  arrange(choice_rev) 
-choices_no_head_q6_ex <- 
-  choices_q6_ex %>% slice(-1)
-own_result_ex <- max_log_likelihood(data = ind_recode_quality_first_d_ex.sample, 
-                                    choices = choices_no_head_q6_ex, times = 2, 
-                                    beta_start_min = -1, beta_start_max = 1)
-data <- ind_recode_quality_first_d_ex.sample
-data.list <- split(data, seq(nrow(data)))
-prob_y_exclude <- sapply(data.list, likelihood_logit_ind, coefficients = own_result_ex, choices = choices_no_head_q6_ex)
-ind_recode_prob_compare <- cbind(ind_recode_prob, prob_y_exclude)
-
-
-
-
-
-
-
-library(nnet)
-
-ind_recode_quality_first.sample$choice_rev <- factor(ind_recode_quality_first.sample$choice_rev)
-a <- multinom(choice_rev ~ school_quality, data = ind_recode_quality_first.sample)
-summary(a)
-ind_recode_quality_first.sample$choice_rev_N <- as.numeric(ind_recode_quality_first.sample$choice_rev)
-mclogit(choice_rev_N ~ school_quality, data = ind_recode_quality_first.sample)
-
-mclogit(
-  transport ~ cost,
-  data=Transport)
-
-
-
-
-
-
-data("Fishing", package = "mlogit")
-head(Fish)
-library("zoo")
-Fish <- mlogit.data(Fishing, varying = c(2:9), shape = "wide", choice = "mode")
-
-m <- mlogit(mode ~ price | income | catch, data = Fish)
-# compute a data.frame containing the mean value of the covariates in
-# the sample
-z <- with(Fish, data.frame(score = tapply(price, idx(m, 2), mean),
-                           catch = tapply(catch, idx(m, 2), mean),
-                           income = mean(income)))
-z
-# compute the marginal effects (the second one is an elasticity
-## IGNORE_RDIFF_BEGIN
-effects(m, covariate = "income", data = z)
-
-
-colnames(z) = "score"
-b <- effects(object = mlogit_result_q5,
-             covariate = "score", data = z)
-library(nnet)
-ind_recode_score_first.sample$pgm_revF = factor(ind_recode_score_first.sample$pgm_rev)
-ind_recode_score_first.sample$Out <- relevel(ind_recode_score_first.sample$pgm_revF, ref = toString(choices_q5[1,1]))
-model <- multinom(Out ~ score, data = ind_recode_score_first.sample)
-summary(model)
-
-
-marginal_effect_var <- function(choice, data, coefficients, choices){
-  new_data <- data %>% summarise_all(mean)
-  h <-  data * 0
-  h[, var] <- 1 / 100
-  likelihood_h <- likelihood_logit(coefficients = coefficients, data = data + h, choices = choices)
-  h_likelihood <- likelihood_logit(coefficients = coefficients, data = data - h, choices = choices)
-  marginal_effect_var <- mean((likelihood_h - h_likelihood) / (2 * h[, var]))
-  return(marginal_effect_var)
-}
-marginal_effect <- function(data, coefficients, choices){
-  vars <- choices %>% pull(1)
-  marginal_effect <- sapply(vars, marginal_effect_var, 
-                            data = data, coefficients = coefficients, choices = choices)
-  marginal_effect <- as.matrix(marginal_effect, ncol = 1)
-  colnames(marginal_effect) = "marginal_effect"
-  return(marginal_effect)
+utility <- choices_utility(coefficients = own_result_q6$par, type = "conditional", choices = choices_q6, data = ind_recode_quality_first_d.sample, change_by_choice = 1)
+prob <- 
+  choices_prob(result_data = utility, choices = choices_q6) %>% 
+  select(starts_with("choice_prob"))
+compare_base_prob <- prob
+for (choice in choices_q6 %>% pull(1)) {
+  compare_base_prob[paste("relative_prob", choice, sep = "_")] = compare_base_prob[paste("choice_prob", choice, sep = "_")] / compare_base_prob[paste("choice_prob", choices_q6[1,1], sep = "_")]
 }
 
-choices_prob_mean <- function(choices, coefficients, mean_data){
-  sum_exp_utility_mean <- 0
-  choices <- choices %>% pull(1)
-  for (chosen in choices) {
-    chosen_index <- grep(chosen, choices)
-    chosen_index_string <- paste("utility", chosen_index, sep = "")
-    if(chosen_index == 1){
-      utility <- 0
-    }
-    else{
-      utility <- coefficients[chosen_index-1] + mean_data[chosen, 1] * coefficients[ length(coefficients)/2 + chosen_index-1 ]
-    }
-    assign(chosen_index_string, utility)
-    sum_exp_utility_mean = sum_exp_utility_mean + exp(utility)
-  }
-  choices_prob_mean <- mean_data 
-  colnames(choices_prob_mean) = "prob_at_mean"
-  i <- 1
-  for (chosen in choices) {
-    choices_prob_mean[i, "prob_at_mean"] = exp(get(paste("utility", i, sep = ""))) / sum_exp_utility_mean
-    i = i + 1
-  }
-  return(choices_prob_mean)
+choices_q6_exclude <- 
+  choices_q6 %>% 
+  left_join(choice_rev, by = "choice_rev") %>% 
+  filter(! pgm_rev == "others") %>% 
+  select(choice_rev)
+prob_exclude <- 
+  choices_prob(result_data = utility, choices = choices_q6_exclude) %>% 
+  select(starts_with("choice_prob"))
+compare_base_prob_ex <- prob_exclude
+for (choice in choices_q6_exclude %>% pull(1)) {
+  compare_base_prob_ex[paste("relative_prob", choice, sep = "_")] = compare_base_prob_ex[paste("choice_prob", choice, sep = "_")] / compare_base_prob_ex[paste("choice_prob", choices_q6_exclude[1,1], sep = "_")]
 }
+compare_base_prob_b <- compare_base_prob %>% select(!ends_with("others"))
+compare_base_prob_b
+compare_base_prob_ex
+# How many times of each individual's predicted choices probability after exclusion are compared with before exclusion 
+(compare_base_prob_ex / compare_base_prob_b)[1:5,1:20]
+

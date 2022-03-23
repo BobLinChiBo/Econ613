@@ -1,0 +1,815 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\boblin\Documents\GitHub\Econ613\Assignments\A3\q5_stata.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}23 Mar 2022, 12:22:08
+{txt}
+{com}. set maxvar 32000
+
+{txt}
+{com}. use "./q5_sample_stata.dta" , clear
+{txt}(Written by R.              )
+
+{com}. encode choice_rev, gen(choice_rev_f)
+{txt}
+{com}. mlogit choice_rev_f score, baseoutcome(1) 
+
+{res}{txt}Iteration 0:{space 3}log likelihood = {res: -3127.952}  
+Iteration 1:{space 3}log likelihood = {res:-2980.8276}  
+Iteration 2:{space 3}log likelihood = {res:-2915.1068}  
+Iteration 3:{space 3}log likelihood = {res:-2903.0822}  
+Iteration 4:{space 3}log likelihood = {res:-2900.8938}  
+Iteration 5:{space 3}log likelihood = {res:-2900.0842}  
+Iteration 6:{space 3}log likelihood = {res:-2899.8634}  
+Iteration 7:{space 3}log likelihood = {res:-2899.8415}  
+Iteration 8:{space 3}log likelihood = {res:-2899.8413}  
+{res}
+{txt}Multinomial logistic regression{col 57}{lalign 13:Number of obs}{col 70} = {res}{ralign 6:643}
+{txt}{col 57}{lalign 13:LR chi2({res:194})}{col 70} = {res}{ralign 6:456.22}
+{txt}{col 57}{lalign 13:Prob > chi2}{col 70} = {res}{ralign 6:0.0000}
+{txt}Log likelihood = {res:-2899.8413}{col 57}{lalign 13:Pseudo R2}{col 70} = {res}{ralign 6:0.0729}
+
+{txt}{hline 14}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1} choice_rev_f{col 15}{c |} Coefficient{col 27}  Std. err.{col 39}      z{col 47}   P>|z|{col 55}     [95% con{col 68}f. interval]
+{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}{res}100_arts     {col 15}{txt}{c |}  (base outcome)
+{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}100_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0802186{col 27}{space 2} .0515978{col 38}{space 1}   -1.55{col 47}{space 3}0.120{col 55}{space 4}-.1813485{col 68}{space 3} .0209112
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 17.54894{col 27}{space 2} 11.81121{col 38}{space 1}    1.49{col 47}{space 3}0.137{col 55}{space 4}-5.600613{col 68}{space 3} 40.69848
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}100_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0359782{col 27}{space 2} .0197824{col 38}{space 1}    1.82{col 47}{space 3}0.069{col 55}{space 4}-.0027946{col 68}{space 3}  .074751
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-10.41245{col 27}{space 2}  5.35997{col 38}{space 1}   -1.94{col 47}{space 3}0.052{col 55}{space 4} -20.9178{col 68}{space 3} .0928973
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}101_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0439596{col 27}{space 2} .0155841{col 38}{space 1}    2.82{col 47}{space 3}0.005{col 55}{space 4} .0134153{col 68}{space 3} .0745039
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-11.34378{col 27}{space 2}  4.09425{col 38}{space 1}   -2.77{col 47}{space 3}0.006{col 55}{space 4}-19.36836{col 68}{space 3}-3.319194
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}101_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0519793{col 27}{space 2} .0154058{col 38}{space 1}    3.37{col 47}{space 3}0.001{col 55}{space 4} .0217844{col 68}{space 3} .0821741
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-13.71418{col 27}{space 2} 4.066319{col 38}{space 1}   -3.37{col 47}{space 3}0.001{col 55}{space 4}-21.68402{col 68}{space 3}-5.744345
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}101_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0408429{col 27}{space 2} .0172933{col 38}{space 1}    2.36{col 47}{space 3}0.018{col 55}{space 4} .0069486{col 68}{space 3} .0747372
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-11.25431{col 27}{space 2} 4.638264{col 38}{space 1}   -2.43{col 47}{space 3}0.015{col 55}{space 4}-20.34514{col 68}{space 3}-2.163478
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}101_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0575915{col 27}{space 2}  .018262{col 38}{space 1}    3.15{col 47}{space 3}0.002{col 55}{space 4} .0217987{col 68}{space 3} .0933844
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-16.93211{col 27}{space 2} 5.180189{col 38}{space 1}   -3.27{col 47}{space 3}0.001{col 55}{space 4}-27.08509{col 68}{space 3}-6.779123
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}102_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0460928{col 27}{space 2} .0170235{col 38}{space 1}    2.71{col 47}{space 3}0.007{col 55}{space 4} .0127274{col 68}{space 3} .0794582
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-12.80636{col 27}{space 2} 4.597916{col 38}{space 1}   -2.79{col 47}{space 3}0.005{col 55}{space 4}-21.81811{col 68}{space 3}-3.794614
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}102_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0523912{col 27}{space 2} .0272522{col 38}{space 1}    1.92{col 47}{space 3}0.055{col 55}{space 4}-.0010222{col 68}{space 3} .1058045
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-16.67534{col 27}{space 2} 8.146637{col 38}{space 1}   -2.05{col 47}{space 3}0.041{col 55}{space 4}-32.64245{col 68}{space 3}-.7082202
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}102_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0160079{col 27}{space 2}  .036641{col 38}{space 1}   -0.44{col 47}{space 3}0.662{col 55}{space 4} -.087823{col 68}{space 3} .0558071
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 2.486701{col 27}{space 2}   9.0724{col 38}{space 1}    0.27{col 47}{space 3}0.784{col 55}{space 4}-15.29488{col 68}{space 3} 20.26828
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}103_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0434079{col 27}{space 2} .0228196{col 38}{space 1}    1.90{col 47}{space 3}0.057{col 55}{space 4}-.0013177{col 68}{space 3} .0881335
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-13.25995{col 27}{space 2} 6.437745{col 38}{space 1}   -2.06{col 47}{space 3}0.039{col 55}{space 4} -25.8777{col 68}{space 3}-.6422055
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}103_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0007898{col 27}{space 2} .0445656{col 38}{space 1}   -0.02{col 47}{space 3}0.986{col 55}{space 4}-.0881368{col 68}{space 3} .0865571
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-1.997219{col 27}{space 2} 11.32621{col 38}{space 1}   -0.18{col 47}{space 3}0.860{col 55}{space 4}-24.19619{col 68}{space 3} 20.20175
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}104_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0565743{col 27}{space 2} .0267883{col 38}{space 1}    2.11{col 47}{space 3}0.035{col 55}{space 4} .0040702{col 68}{space 3} .1090784
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-17.99287{col 27}{space 2} 8.155491{col 38}{space 1}   -2.21{col 47}{space 3}0.027{col 55}{space 4}-33.97734{col 68}{space 3}-2.008405
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}104_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0287029{col 27}{space 2} .0256485{col 38}{space 1}    1.12{col 47}{space 3}0.263{col 55}{space 4}-.0215673{col 68}{space 3} .0789731
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-9.066784{col 27}{space 2} 6.953665{col 38}{space 1}   -1.30{col 47}{space 3}0.192{col 55}{space 4}-22.69572{col 68}{space 3} 4.562149
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}104_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0268269{col 27}{space 2} .0340733{col 38}{space 1}    0.79{col 47}{space 3}0.431{col 55}{space 4}-.0399555{col 68}{space 3} .0936093
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-9.244044{col 27}{space 2} 9.280344{col 38}{space 1}   -1.00{col 47}{space 3}0.319{col 55}{space 4}-27.43318{col 68}{space 3} 8.945096
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}104_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0074728{col 27}{space 2} .0414692{col 38}{space 1}    0.18{col 47}{space 3}0.857{col 55}{space 4}-.0738054{col 68}{space 3}  .088751
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-4.107772{col 27}{space 2} 10.72958{col 38}{space 1}   -0.38{col 47}{space 3}0.702{col 55}{space 4}-25.13735{col 68}{space 3} 16.92181
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}105_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0406824{col 27}{space 2} .0206881{col 38}{space 1}    1.97{col 47}{space 3}0.049{col 55}{space 4} .0001345{col 68}{space 3} .0812304
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-12.05484{col 27}{space 2} 5.712665{col 38}{space 1}   -2.11{col 47}{space 3}0.035{col 55}{space 4}-23.25146{col 68}{space 3}-.8582231
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}105_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0296076{col 27}{space 2} .0205876{col 38}{space 1}    1.44{col 47}{space 3}0.150{col 55}{space 4}-.0107435{col 68}{space 3} .0699586
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-8.623775{col 27}{space 2} 5.513755{col 38}{space 1}   -1.56{col 47}{space 3}0.118{col 55}{space 4}-19.43054{col 68}{space 3} 2.182985
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}201_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0555472{col 27}{space 2}   .01646{col 38}{space 1}    3.37{col 47}{space 3}0.001{col 55}{space 4} .0232861{col 68}{space 3} .0878082
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-15.58682{col 27}{space 2} 4.483604{col 38}{space 1}   -3.48{col 47}{space 3}0.001{col 55}{space 4}-24.37452{col 68}{space 3}-6.799117
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}201_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0717445{col 27}{space 2} .0195565{col 38}{space 1}    3.67{col 47}{space 3}0.000{col 55}{space 4} .0334144{col 68}{space 3} .1100745
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-21.96393{col 27}{space 2} 5.934784{col 38}{space 1}   -3.70{col 47}{space 3}0.000{col 55}{space 4} -33.5959{col 68}{space 3}-10.33197
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}201_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0407274{col 27}{space 2} .0183803{col 38}{space 1}    2.22{col 47}{space 3}0.027{col 55}{space 4} .0047026{col 68}{space 3} .0767522
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-11.55712{col 27}{space 2} 4.985374{col 38}{space 1}   -2.32{col 47}{space 3}0.020{col 55}{space 4}-21.32828{col 68}{space 3}-1.785971
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}201_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}   .07072{col 27}{space 2} .0195046{col 38}{space 1}    3.63{col 47}{space 3}0.000{col 55}{space 4} .0324917{col 68}{space 3} .1089482
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-21.60706{col 27}{space 2} 5.894156{col 38}{space 1}   -3.67{col 47}{space 3}0.000{col 55}{space 4}-33.15939{col 68}{space 3}-10.05473
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}202_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0415866{col 27}{space 2} .0580049{col 38}{space 1}   -0.72{col 47}{space 3}0.473{col 55}{space 4} -.155274{col 68}{space 3} .0721008
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 7.945156{col 27}{space 2}  13.7925{col 38}{space 1}    0.58{col 47}{space 3}0.565{col 55}{space 4}-19.08764{col 68}{space 3} 34.97796
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}202_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0043268{col 27}{space 2} .0426639{col 38}{space 1}    0.10{col 47}{space 3}0.919{col 55}{space 4}-.0792929{col 68}{space 3} .0879464
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -3.29927{col 27}{space 2} 10.96106{col 38}{space 1}   -0.30{col 47}{space 3}0.763{col 55}{space 4}-24.78255{col 68}{space 3} 18.18401
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}203_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0597689{col 27}{space 2} .0170472{col 38}{space 1}    3.51{col 47}{space 3}0.000{col 55}{space 4} .0263571{col 68}{space 3} .0931808
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-17.23029{col 27}{space 2} 4.749727{col 38}{space 1}   -3.63{col 47}{space 3}0.000{col 55}{space 4}-26.53959{col 68}{space 3}   -7.921
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}203_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0433021{col 27}{space 2}  .017593{col 38}{space 1}    2.46{col 47}{space 3}0.014{col 55}{space 4} .0088205{col 68}{space 3} .0777836
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-12.13007{col 27}{space 2} 4.759938{col 38}{space 1}   -2.55{col 47}{space 3}0.011{col 55}{space 4}-21.45938{col 68}{space 3}-2.800767
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}203_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0812684{col 27}{space 2} .0203341{col 38}{space 1}    4.00{col 47}{space 3}0.000{col 55}{space 4} .0414142{col 68}{space 3} .1211226
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-25.37553{col 27}{space 2} 6.439063{col 38}{space 1}   -3.94{col 47}{space 3}0.000{col 55}{space 4}-37.99586{col 68}{space 3} -12.7552
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}204_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0531036{col 27}{space 2} .0158157{col 38}{space 1}    3.36{col 47}{space 3}0.001{col 55}{space 4} .0221055{col 68}{space 3} .0841017
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-14.41248{col 27}{space 2}  4.22455{col 38}{space 1}   -3.41{col 47}{space 3}0.001{col 55}{space 4}-22.69245{col 68}{space 3}-6.132514
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}204_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0515809{col 27}{space 2} .0184752{col 38}{space 1}    2.79{col 47}{space 3}0.005{col 55}{space 4}   .01537{col 68}{space 3} .0877917
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-15.03765{col 27}{space 2} 5.164699{col 38}{space 1}   -2.91{col 47}{space 3}0.004{col 55}{space 4}-25.16027{col 68}{space 3}-4.915021
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}204_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}   .03801{col 27}{space 2} .0237171{col 38}{space 1}    1.60{col 47}{space 3}0.109{col 55}{space 4}-.0084746{col 68}{space 3} .0844946
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-11.68693{col 27}{space 2} 6.589529{col 38}{space 1}   -1.77{col 47}{space 3}0.076{col 55}{space 4}-24.60217{col 68}{space 3}  1.22831
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}205_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0851338{col 27}{space 2} .0529495{col 38}{space 1}   -1.61{col 47}{space 3}0.108{col 55}{space 4}-.1889129{col 68}{space 3} .0186453
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 18.65728{col 27}{space 2} 12.06663{col 38}{space 1}    1.55{col 47}{space 3}0.122{col 55}{space 4}-4.992888{col 68}{space 3} 42.30744
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}205_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0640626{col 27}{space 2} .0265019{col 38}{space 1}    2.42{col 47}{space 3}0.016{col 55}{space 4} .0121197{col 68}{space 3} .1160054
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-20.43748{col 27}{space 2} 8.353883{col 38}{space 1}   -2.45{col 47}{space 3}0.014{col 55}{space 4}-36.81079{col 68}{space 3}-4.064172
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}206_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0344319{col 27}{space 2} .0199655{col 38}{space 1}    1.72{col 47}{space 3}0.085{col 55}{space 4}-.0046997{col 68}{space 3} .0735636
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-9.973706{col 27}{space 2} 5.394213{col 38}{space 1}   -1.85{col 47}{space 3}0.064{col 55}{space 4}-20.54617{col 68}{space 3} .5987578
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}206_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0240887{col 27}{space 2} .0213781{col 38}{space 1}    1.13{col 47}{space 3}0.260{col 55}{space 4}-.0178116{col 68}{space 3} .0659889
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -7.11128{col 27}{space 2} 5.669152{col 38}{space 1}   -1.25{col 47}{space 3}0.210{col 55}{space 4}-18.22261{col 68}{space 3} 4.000054
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}206_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0043268{col 27}{space 2} .0271571{col 38}{space 1}    0.16{col 47}{space 3}0.873{col 55}{space 4}-.0489001{col 68}{space 3} .0575537
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-2.200658{col 27}{space 2} 6.965803{col 38}{space 1}   -0.32{col 47}{space 3}0.752{col 55}{space 4}-15.85338{col 68}{space 3} 11.45207
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}207_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}  .021696{col 27}{space 2}  .035984{col 38}{space 1}    0.60{col 47}{space 3}0.547{col 55}{space 4}-.0488313{col 68}{space 3} .0922233
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -7.85129{col 27}{space 2} 9.654145{col 38}{space 1}   -0.81{col 47}{space 3}0.416{col 55}{space 4}-26.77307{col 68}{space 3} 11.07049
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}208_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}  .005925{col 27}{space 2} .0313467{col 38}{space 1}    0.19{col 47}{space 3}0.850{col 55}{space 4}-.0555134{col 68}{space 3} .0673634
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -3.01606{col 27}{space 2} 8.071918{col 38}{space 1}   -0.37{col 47}{space 3}0.709{col 55}{space 4}-18.83673{col 68}{space 3} 12.80461
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}208_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0271124{col 27}{space 2}  .053464{col 38}{space 1}   -0.51{col 47}{space 3}0.612{col 55}{space 4}-.1318999{col 68}{space 3} .0776752
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 4.494088{col 27}{space 2} 12.97508{col 38}{space 1}    0.35{col 47}{space 3}0.729{col 55}{space 4} -20.9366{col 68}{space 3} 29.92478
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}210_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0177849{col 27}{space 2} .0209593{col 38}{space 1}    0.85{col 47}{space 3}0.396{col 55}{space 4}-.0232946{col 68}{space 3} .0588644
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-5.196526{col 27}{space 2} 5.482443{col 38}{space 1}   -0.95{col 47}{space 3}0.343{col 55}{space 4}-15.94192{col 68}{space 3} 5.548864
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}210_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0211441{col 27}{space 2} .0274636{col 38}{space 1}    0.77{col 47}{space 3}0.441{col 55}{space 4}-.0326836{col 68}{space 3} .0749718
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-7.009813{col 27}{space 2} 7.309954{col 38}{space 1}   -0.96{col 47}{space 3}0.338{col 55}{space 4}-21.33706{col 68}{space 3} 7.317432
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}210_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0640626{col 27}{space 2} .0213412{col 38}{space 1}    3.00{col 47}{space 3}0.003{col 55}{space 4} .0222346{col 68}{space 3} .1058906
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-19.74433{col 27}{space 2} 6.460922{col 38}{space 1}   -3.06{col 47}{space 3}0.002{col 55}{space 4}-32.40751{col 68}{space 3}-7.081159
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}210_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}  .084883{col 27}{space 2} .0172334{col 38}{space 1}    4.93{col 47}{space 3}0.000{col 55}{space 4} .0511061{col 68}{space 3} .1186599
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-25.73073{col 27}{space 2} 5.091685{col 38}{space 1}   -5.05{col 47}{space 3}0.000{col 55}{space 4}-35.71025{col 68}{space 3}-15.75121
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}211_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0539847{col 27}{space 2} .0183698{col 38}{space 1}    2.94{col 47}{space 3}0.003{col 55}{space 4} .0179805{col 68}{space 3}  .089989
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-15.78702{col 27}{space 2}    5.164{col 38}{space 1}   -3.06{col 47}{space 3}0.002{col 55}{space 4}-25.90828{col 68}{space 3}-5.665768
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}211_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0443496{col 27}{space 2} .0226828{col 38}{space 1}    1.96{col 47}{space 3}0.051{col 55}{space 4}-.0001078{col 68}{space 3}  .088807
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-13.53894{col 27}{space 2} 6.416831{col 38}{space 1}   -2.11{col 47}{space 3}0.035{col 55}{space 4} -26.1157{col 68}{space 3}-.9621795
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}212_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0277764{col 27}{space 2} .0337305{col 38}{space 1}    0.82{col 47}{space 3}0.410{col 55}{space 4}-.0383342{col 68}{space 3} .0938869
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -9.50467{col 27}{space 2} 9.213809{col 38}{space 1}   -1.03{col 47}{space 3}0.302{col 55}{space 4} -27.5634{col 68}{space 3} 8.554064
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}213_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0457779{col 27}{space 2} .0174538{col 38}{space 1}    2.62{col 47}{space 3}0.009{col 55}{space 4} .0115691{col 68}{space 3} .0799867
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-12.86617{col 27}{space 2} 4.739999{col 38}{space 1}   -2.71{col 47}{space 3}0.007{col 55}{space 4} -22.1564{col 68}{space 3}-3.575946
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}213_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}  .015298{col 27}{space 2} .0212972{col 38}{space 1}    0.72{col 47}{space 3}0.473{col 55}{space 4}-.0264438{col 68}{space 3} .0570398
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -4.53851{col 27}{space 2} 5.549261{col 38}{space 1}   -0.82{col 47}{space 3}0.413{col 55}{space 4}-15.41486{col 68}{space 3} 6.337841
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}213_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0384888{col 27}{space 2} .0570342{col 38}{space 1}   -0.67{col 47}{space 3}0.500{col 55}{space 4}-.1502737{col 68}{space 3} .0732961
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 7.212537{col 27}{space 2} 13.61796{col 38}{space 1}    0.53{col 47}{space 3}0.596{col 55}{space 4}-19.47817{col 68}{space 3} 33.90324
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}214_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0089722{col 27}{space 2} .0408944{col 38}{space 1}    0.22{col 47}{space 3}0.826{col 55}{space 4}-.0711794{col 68}{space 3} .0891238
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-4.495363{col 27}{space 2}  10.6177{col 38}{space 1}   -0.42{col 47}{space 3}0.672{col 55}{space 4}-25.30567{col 68}{space 3} 16.31494
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}215_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0273046{col 27}{space 2} .0209086{col 38}{space 1}    1.31{col 47}{space 3}0.192{col 55}{space 4}-.0136754{col 68}{space 3} .0682846
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-7.988749{col 27}{space 2} 5.576567{col 38}{space 1}   -1.43{col 47}{space 3}0.152{col 55}{space 4}-18.91862{col 68}{space 3} 2.941121
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}215_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.3412339{col 27}{space 2} .2392269{col 38}{space 1}   -1.43{col 47}{space 3}0.154{col 55}{space 4}  -.81011{col 68}{space 3} .1276423
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 72.42924{col 27}{space 2} 49.72274{col 38}{space 1}    1.46{col 47}{space 3}0.145{col 55}{space 4}-25.02553{col 68}{space 3}  169.884
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}301_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0705502{col 27}{space 2} .0157988{col 38}{space 1}    4.47{col 47}{space 3}0.000{col 55}{space 4} .0395851{col 68}{space 3} .1015152
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-20.08177{col 27}{space 2} 4.323543{col 38}{space 1}   -4.64{col 47}{space 3}0.000{col 55}{space 4}-28.55576{col 68}{space 3}-11.60778
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}301_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0896072{col 27}{space 2} .0179567{col 38}{space 1}    4.99{col 47}{space 3}0.000{col 55}{space 4} .0544128{col 68}{space 3} .1248016
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -27.6407{col 27}{space 2} 5.476529{col 38}{space 1}   -5.05{col 47}{space 3}0.000{col 55}{space 4} -38.3745{col 68}{space 3} -16.9069
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}301_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0277764{col 27}{space 2} .0337305{col 38}{space 1}    0.82{col 47}{space 3}0.410{col 55}{space 4}-.0383342{col 68}{space 3} .0938869
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -9.50467{col 27}{space 2} 9.213809{col 38}{space 1}   -1.03{col 47}{space 3}0.302{col 55}{space 4} -27.5634{col 68}{space 3} 8.554064
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}301_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0824969{col 27}{space 2} .0166242{col 38}{space 1}    4.96{col 47}{space 3}0.000{col 55}{space 4}  .049914{col 68}{space 3} .1150798
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-24.62326{col 27}{space 2} 4.783314{col 38}{space 1}   -5.15{col 47}{space 3}0.000{col 55}{space 4}-33.99839{col 68}{space 3}-15.24814
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}302_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0026094{col 27}{space 2} .0452279{col 38}{space 1}   -0.06{col 47}{space 3}0.954{col 55}{space 4}-.0912546{col 68}{space 3} .0860357
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-1.537776{col 27}{space 2} 11.45233{col 38}{space 1}   -0.13{col 47}{space 3}0.893{col 55}{space 4}-23.98394{col 68}{space 3} 20.90838
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}303_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0493685{col 27}{space 2} .0220602{col 38}{space 1}    2.24{col 47}{space 3}0.025{col 55}{space 4} .0061313{col 68}{space 3} .0926057
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-15.05052{col 27}{space 2} 6.336864{col 38}{space 1}   -2.38{col 47}{space 3}0.018{col 55}{space 4}-27.47055{col 68}{space 3}-2.630496
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}303_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0205844{col 27}{space 2} .0276035{col 38}{space 1}    0.75{col 47}{space 3}0.456{col 55}{space 4}-.0335174{col 68}{space 3} .0746862
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-6.859688{col 27}{space 2} 7.337549{col 38}{space 1}   -0.93{col 47}{space 3}0.350{col 55}{space 4}-21.24102{col 68}{space 3} 7.521643
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}303_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .1052323{col 27}{space 2} .0368099{col 38}{space 1}    2.86{col 47}{space 3}0.004{col 55}{space 4} .0330862{col 68}{space 3} .1773784
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-35.66254{col 27}{space 2} 13.95667{col 38}{space 1}   -2.56{col 47}{space 3}0.011{col 55}{space 4}-63.01711{col 68}{space 3}-8.307964
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}304_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0475553{col 27}{space 2} .0199658{col 38}{space 1}    2.38{col 47}{space 3}0.017{col 55}{space 4}  .008423{col 68}{space 3} .0866875
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-14.09399{col 27}{space 2} 5.603952{col 38}{space 1}   -2.52{col 47}{space 3}0.012{col 55}{space 4}-25.07754{col 68}{space 3}-3.110449
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}304_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0513086{col 27}{space 2}  .027407{col 38}{space 1}    1.87{col 47}{space 3}0.061{col 55}{space 4}-.0024081{col 68}{space 3} .1050252
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-16.33973{col 27}{space 2} 8.155449{col 38}{space 1}   -2.00{col 47}{space 3}0.045{col 55}{space 4}-32.32412{col 68}{space 3}-.3553448
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}304_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0615914{col 27}{space 2} .0265186{col 38}{space 1}    2.32{col 47}{space 3}0.020{col 55}{space 4} .0096159{col 68}{space 3} .1135668
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-19.61828{col 27}{space 2} 8.261422{col 38}{space 1}   -2.37{col 47}{space 3}0.018{col 55}{space 4}-35.81037{col 68}{space 3}-3.426192
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}305_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0306657{col 27}{space 2} .0193524{col 38}{space 1}    1.58{col 47}{space 3}0.113{col 55}{space 4}-.0072644{col 68}{space 3} .0685958
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-8.694361{col 27}{space 2} 5.165384{col 38}{space 1}   -1.68{col 47}{space 3}0.092{col 55}{space 4}-18.81833{col 68}{space 3} 1.429605
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}305_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0434079{col 27}{space 2} .0228196{col 38}{space 1}    1.90{col 47}{space 3}0.057{col 55}{space 4}-.0013177{col 68}{space 3} .0881335
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-13.25995{col 27}{space 2} 6.437745{col 38}{space 1}   -2.06{col 47}{space 3}0.039{col 55}{space 4} -25.8777{col 68}{space 3}-.6422055
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}305_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}  .021696{col 27}{space 2}  .035984{col 38}{space 1}    0.60{col 47}{space 3}0.547{col 55}{space 4}-.0488313{col 68}{space 3} .0922233
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -7.85129{col 27}{space 2} 9.654145{col 38}{space 1}   -0.81{col 47}{space 3}0.416{col 55}{space 4}-26.77307{col 68}{space 3} 11.07049
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}306_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0523912{col 27}{space 2} .0196129{col 38}{space 1}    2.67{col 47}{space 3}0.008{col 55}{space 4} .0139506{col 68}{space 3} .0908317
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-15.57672{col 27}{space 2} 5.574337{col 38}{space 1}   -2.79{col 47}{space 3}0.005{col 55}{space 4}-26.50222{col 68}{space 3}-4.651223
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}306_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0219727{col 27}{space 2} .0320697{col 38}{space 1}   -0.69{col 47}{space 3}0.493{col 55}{space 4}-.0848282{col 68}{space 3} .0408828
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 4.348956{col 27}{space 2} 7.886698{col 38}{space 1}    0.55{col 47}{space 3}0.581{col 55}{space 4}-11.10869{col 68}{space 3}  19.8066
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}306_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0361673{col 27}{space 2} .0309245{col 38}{space 1}    1.17{col 47}{space 3}0.242{col 55}{space 4}-.0244437{col 68}{space 3} .0967782
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -11.8526{col 27}{space 2} 8.683132{col 38}{space 1}   -1.37{col 47}{space 3}0.172{col 55}{space 4}-28.87123{col 68}{space 3} 5.166021
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}307_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0170542{col 27}{space 2} .0377668{col 38}{space 1}    0.45{col 47}{space 3}0.652{col 55}{space 4}-.0569674{col 68}{space 3} .0910758
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-6.612104{col 27}{space 2} 10.00477{col 38}{space 1}   -0.66{col 47}{space 3}0.509{col 55}{space 4}-26.22109{col 68}{space 3} 12.99688
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}308_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0332983{col 27}{space 2} .0217229{col 38}{space 1}    1.53{col 47}{space 3}0.125{col 55}{space 4}-.0092779{col 68}{space 3} .0758744
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-9.941649{col 27}{space 2} 5.901109{col 38}{space 1}   -1.68{col 47}{space 3}0.092{col 55}{space 4}-21.50761{col 68}{space 3} 1.624312
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}308_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0458783{col 27}{space 2} .0224739{col 38}{space 1}    2.04{col 47}{space 3}0.041{col 55}{space 4} .0018303{col 68}{space 3} .0899263
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-13.99485{col 27}{space 2} 6.386725{col 38}{space 1}   -2.19{col 47}{space 3}0.028{col 55}{space 4} -26.5126{col 68}{space 3}-1.477099
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}309_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0395128{col 27}{space 2} .0170132{col 38}{space 1}    2.32{col 47}{space 3}0.020{col 55}{space 4} .0061675{col 68}{space 3} .0728581
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-10.73426{col 27}{space 2} 4.536783{col 38}{space 1}   -2.37{col 47}{space 3}0.018{col 55}{space 4}-19.62619{col 68}{space 3} -1.84233
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}309_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0299044{col 27}{space 2} .0186618{col 38}{space 1}    1.60{col 47}{space 3}0.109{col 55}{space 4} -.006672{col 68}{space 3} .0664809
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-8.300592{col 27}{space 2} 4.954335{col 38}{space 1}   -1.68{col 47}{space 3}0.094{col 55}{space 4}-18.01091{col 68}{space 3} 1.409726
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}309_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}  .081169{col 27}{space 2} .0226337{col 38}{space 1}    3.59{col 47}{space 3}0.000{col 55}{space 4} .0368079{col 68}{space 3} .1255302
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-25.74457{col 27}{space 2} 7.407848{col 38}{space 1}   -3.48{col 47}{space 3}0.001{col 55}{space 4}-40.26369{col 68}{space 3}-11.22546
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}310_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0224202{col 27}{space 2} .0236127{col 38}{space 1}    0.95{col 47}{space 3}0.342{col 55}{space 4}-.0238598{col 68}{space 3} .0687001
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-6.947723{col 27}{space 2} 6.270043{col 38}{space 1}   -1.11{col 47}{space 3}0.268{col 55}{space 4}-19.23678{col 68}{space 3} 5.341336
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}310_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0158073{col 27}{space 2} .0202096{col 38}{space 1}    0.78{col 47}{space 3}0.434{col 55}{space 4}-.0238028{col 68}{space 3} .0554173
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -4.49053{col 27}{space 2} 5.260075{col 38}{space 1}   -0.85{col 47}{space 3}0.393{col 55}{space 4}-14.80009{col 68}{space 3} 5.819027
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}310_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0268269{col 27}{space 2} .0260835{col 38}{space 1}    1.03{col 47}{space 3}0.304{col 55}{space 4}-.0242957{col 68}{space 3} .0779495
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-8.550897{col 27}{space 2} 7.038481{col 38}{space 1}   -1.21{col 47}{space 3}0.224{col 55}{space 4}-22.34607{col 68}{space 3} 5.244273
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}311_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0668581{col 27}{space 2} .0662768{col 38}{space 1}   -1.01{col 47}{space 3}0.313{col 55}{space 4}-.1967583{col 68}{space 3} .0630421
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 13.81675{col 27}{space 2} 15.29642{col 38}{space 1}    0.90{col 47}{space 3}0.366{col 55}{space 4}-16.16368{col 68}{space 3} 43.79718
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}311_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0481255{col 27}{space 2} .0367154{col 38}{space 1}   -1.31{col 47}{space 3}0.190{col 55}{space 4}-.1200863{col 68}{space 3} .0238353
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 10.58034{col 27}{space 2} 8.729123{col 38}{space 1}    1.21{col 47}{space 3}0.225{col 55}{space 4}-6.528432{col 68}{space 3}  27.6891
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}312_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}  .005925{col 27}{space 2} .0268421{col 38}{space 1}    0.22{col 47}{space 3}0.825{col 55}{space 4}-.0466846{col 68}{space 3} .0585345
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-2.610594{col 27}{space 2} 6.904825{col 38}{space 1}   -0.38{col 47}{space 3}0.705{col 55}{space 4} -16.1438{col 68}{space 3} 10.92261
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}312_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}  .005925{col 27}{space 2} .0420591{col 38}{space 1}    0.14{col 47}{space 3}0.888{col 55}{space 4}-.0765093{col 68}{space 3} .0883593
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-3.709207{col 27}{space 2} 10.84406{col 38}{space 1}   -0.34{col 47}{space 3}0.732{col 55}{space 4}-24.96317{col 68}{space 3} 17.54476
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}312_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0158073{col 27}{space 2} .0382498{col 38}{space 1}    0.41{col 47}{space 3}0.679{col 55}{space 4}-.0591611{col 68}{space 3} .0907756
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-6.282289{col 27}{space 2} 10.09974{col 38}{space 1}   -0.62{col 47}{space 3}0.534{col 55}{space 4}-26.07742{col 68}{space 3} 13.51284
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}401_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0362175{col 27}{space 2}  .015878{col 38}{space 1}    2.28{col 47}{space 3}0.023{col 55}{space 4} .0050972{col 68}{space 3} .0673379
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-9.158882{col 27}{space 2} 4.155172{col 38}{space 1}   -2.20{col 47}{space 3}0.028{col 55}{space 4}-17.30287{col 68}{space 3}-1.014895
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}401_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0044889{col 27}{space 2} .0189222{col 38}{space 1}    0.24{col 47}{space 3}0.812{col 55}{space 4}-.0325979{col 68}{space 3} .0415757
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-1.038202{col 27}{space 2} 4.840377{col 38}{space 1}   -0.21{col 47}{space 3}0.830{col 55}{space 4}-10.52517{col 68}{space 3} 8.448764
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}401_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0558049{col 27}{space 2} .0215382{col 38}{space 1}    2.59{col 47}{space 3}0.010{col 55}{space 4} .0135909{col 68}{space 3}  .098019
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-17.05489{col 27}{space 2} 6.320536{col 38}{space 1}   -2.70{col 47}{space 3}0.007{col 55}{space 4}-29.44292{col 68}{space 3}-4.666871
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}401_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0547695{col 27}{space 2} .0216006{col 38}{space 1}    2.54{col 47}{space 3}0.011{col 55}{space 4} .0124331{col 68}{space 3} .0971058
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-16.72717{col 27}{space 2} 6.316116{col 38}{space 1}   -2.65{col 47}{space 3}0.008{col 55}{space 4}-29.10653{col 68}{space 3} -4.34781
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}402_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0131984{col 27}{space 2} .0294836{col 38}{space 1}    0.45{col 47}{space 3}0.654{col 55}{space 4}-.0445884{col 68}{space 3} .0709853
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-4.903051{col 27}{space 2} 7.708126{col 38}{space 1}   -0.64{col 47}{space 3}0.525{col 55}{space 4} -20.0107{col 68}{space 3}  10.2046
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}402_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0026762{col 27}{space 2} .0432834{col 38}{space 1}    0.06{col 47}{space 3}0.951{col 55}{space 4}-.0821576{col 68}{space 3}   .08751
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-2.877561{col 27}{space 2} 11.08048{col 38}{space 1}   -0.26{col 47}{space 3}0.795{col 55}{space 4} -24.5949{col 68}{space 3} 18.83978
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}403_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0043268{col 27}{space 2} .0426639{col 38}{space 1}    0.10{col 47}{space 3}0.919{col 55}{space 4}-.0792929{col 68}{space 3} .0879464
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -3.29927{col 27}{space 2} 10.96106{col 38}{space 1}   -0.30{col 47}{space 3}0.763{col 55}{space 4}-24.78255{col 68}{space 3} 18.18401
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}403_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0195277{col 27}{space 2} .0510292{col 38}{space 1}   -0.38{col 47}{space 3}0.702{col 55}{space 4}-.1195432{col 68}{space 3} .0804878
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 2.654989{col 27}{space 2} 12.53273{col 38}{space 1}    0.21{col 47}{space 3}0.832{col 55}{space 4}-21.90872{col 68}{space 3} 27.21869
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}405_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0064464{col 27}{space 2} .0267391{col 38}{space 1}    0.24{col 47}{space 3}0.809{col 55}{space 4}-.0459612{col 68}{space 3}  .058854
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-2.744693{col 27}{space 2} 6.884834{col 38}{space 1}   -0.40{col 47}{space 3}0.690{col 55}{space 4}-16.23872{col 68}{space 3} 10.74933
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}407_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0330266{col 27}{space 2} .0246989{col 38}{space 1}    1.34{col 47}{space 3}0.181{col 55}{space 4}-.0153824{col 68}{space 3} .0814357
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-10.27074{col 27}{space 2}  6.77111{col 38}{space 1}   -1.52{col 47}{space 3}0.129{col 55}{space 4}-23.54187{col 68}{space 3} 3.000395
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}407_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0384888{col 27}{space 2} .0570342{col 38}{space 1}   -0.67{col 47}{space 3}0.500{col 55}{space 4}-.1502737{col 68}{space 3} .0732961
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 7.212537{col 27}{space 2} 13.61796{col 38}{space 1}    0.53{col 47}{space 3}0.596{col 55}{space 4}-19.47817{col 68}{space 3} 33.90324
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}409_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0304914{col 27}{space 2} .0186051{col 38}{space 1}    1.64{col 47}{space 3}0.101{col 55}{space 4}-.0059739{col 68}{space 3} .0669566
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-8.463557{col 27}{space 2} 4.943302{col 38}{space 1}   -1.71{col 47}{space 3}0.087{col 55}{space 4}-18.15225{col 68}{space 3} 1.225136
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}501_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0499093{col 27}{space 2} .0150005{col 38}{space 1}    3.33{col 47}{space 3}0.001{col 55}{space 4} .0205089{col 68}{space 3} .0793097
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-12.57692{col 27}{space 2} 3.909433{col 38}{space 1}   -3.22{col 47}{space 3}0.001{col 55}{space 4}-20.23927{col 68}{space 3}-4.914576
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}501_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0540635{col 27}{space 2} .0152416{col 38}{space 1}    3.55{col 47}{space 3}0.000{col 55}{space 4} .0241905{col 68}{space 3} .0839366
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-14.20234{col 27}{space 2} 4.012789{col 38}{space 1}   -3.54{col 47}{space 3}0.000{col 55}{space 4}-22.06726{col 68}{space 3}-6.337416
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}501_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0434079{col 27}{space 2} .0175866{col 38}{space 1}    2.47{col 47}{space 3}0.014{col 55}{space 4} .0089388{col 68}{space 3}  .077877
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-12.16134{col 27}{space 2} 4.758968{col 38}{space 1}   -2.56{col 47}{space 3}0.011{col 55}{space 4}-21.48875{col 68}{space 3}-2.833936
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}501_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0941565{col 27}{space 2} .0167501{col 38}{space 1}    5.62{col 47}{space 3}0.000{col 55}{space 4} .0613269{col 68}{space 3} .1269862
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-28.68747{col 27}{space 2}  4.91253{col 38}{space 1}   -5.84{col 47}{space 3}0.000{col 55}{space 4}-38.31585{col 68}{space 3}-19.05908
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}502_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0497296{col 27}{space 2} .0168827{col 38}{space 1}    2.95{col 47}{space 3}0.003{col 55}{space 4} .0166402{col 68}{space 3} .0828189
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-13.90818{col 27}{space 2} 4.583831{col 38}{space 1}   -3.03{col 47}{space 3}0.002{col 55}{space 4}-22.89232{col 68}{space 3}-4.924033
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}502_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0422838{col 27}{space 2} .0191296{col 38}{space 1}    2.21{col 47}{space 3}0.027{col 55}{space 4} .0047905{col 68}{space 3} .0797771
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-12.23563{col 27}{space 2}   5.2452{col 38}{space 1}   -2.33{col 47}{space 3}0.020{col 55}{space 4}-22.51603{col 68}{space 3}-1.955225
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}503_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0610956{col 27}{space 2} .0213502{col 38}{space 1}    2.86{col 47}{space 3}0.004{col 55}{space 4} .0192499{col 68}{space 3} .1029413
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-18.76229{col 27}{space 2} 6.388298{col 38}{space 1}   -2.94{col 47}{space 3}0.003{col 55}{space 4}-31.28312{col 68}{space 3}-6.241454
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}503_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0179656{col 27}{space 2} .0223243{col 38}{space 1}    0.80{col 47}{space 3}0.421{col 55}{space 4}-.0257891{col 68}{space 3} .0617203
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-5.467674{col 27}{space 2}  5.85651{col 38}{space 1}   -0.93{col 47}{space 3}0.351{col 55}{space 4}-16.94622{col 68}{space 3} 6.010874
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}503_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0007898{col 27}{space 2} .0330313{col 38}{space 1}   -0.02{col 47}{space 3}0.981{col 55}{space 4}  -.06553{col 68}{space 3} .0639503
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-1.304072{col 27}{space 2} 8.396027{col 38}{space 1}   -0.16{col 47}{space 3}0.877{col 55}{space 4}-17.75998{col 68}{space 3} 15.15184
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}503_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0131984{col 27}{space 2} .0392617{col 38}{space 1}    0.34{col 47}{space 3}0.737{col 55}{space 4} -.063753{col 68}{space 3} .0901499
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-5.596198{col 27}{space 2} 10.29842{col 38}{space 1}   -0.54{col 47}{space 3}0.587{col 55}{space 4}-25.78072{col 68}{space 3} 14.58833
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}504_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0298136{col 27}{space 2} .0543167{col 38}{space 1}   -0.55{col 47}{space 3}0.583{col 55}{space 4}-.1362724{col 68}{space 3} .0766453
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 5.143716{col 27}{space 2} 13.12902{col 38}{space 1}    0.39{col 47}{space 3}0.695{col 55}{space 4}-20.58869{col 68}{space 3} 30.87612
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}505_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0532301{col 27}{space 2} .0167835{col 38}{space 1}    3.17{col 47}{space 3}0.002{col 55}{space 4}  .020335{col 68}{space 3} .0861252
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}  -14.991{col 27}{space 2} 4.582066{col 38}{space 1}   -3.27{col 47}{space 3}0.001{col 55}{space 4}-23.97168{col 68}{space 3}-6.010317
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}505_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0483261{col 27}{space 2} .0199007{col 38}{space 1}    2.43{col 47}{space 3}0.015{col 55}{space 4} .0093214{col 68}{space 3} .0873307
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-14.32754{col 27}{space 2} 5.596469{col 38}{space 1}   -2.56{col 47}{space 3}0.010{col 55}{space 4}-25.29642{col 68}{space 3}-3.358667
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}506_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0227774{col 27}{space 2}  .020302{col 38}{space 1}    1.12{col 47}{space 3}0.262{col 55}{space 4}-.0170139{col 68}{space 3} .0625686
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-6.533277{col 27}{space 2} 5.352186{col 38}{space 1}   -1.22{col 47}{space 3}0.222{col 55}{space 4}-17.02337{col 68}{space 3} 3.956814
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}506_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0089722{col 27}{space 2} .0305688{col 38}{space 1}    0.29{col 47}{space 3}0.769{col 55}{space 4}-.0509415{col 68}{space 3} .0688859
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-3.802216{col 27}{space 2} 7.920609{col 38}{space 1}   -0.48{col 47}{space 3}0.631{col 55}{space 4}-19.32632{col 68}{space 3} 11.72189
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}507_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0551711{col 27}{space 2} .0453456{col 38}{space 1}   -1.22{col 47}{space 3}0.224{col 55}{space 4}-.1440467{col 68}{space 3} .0337046
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}  11.8164{col 27}{space 2} 10.65114{col 38}{space 1}    1.11{col 47}{space 3}0.267{col 55}{space 4}-9.059448{col 68}{space 3} 32.69225
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}510_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0443496{col 27}{space 2} .0202715{col 38}{space 1}    2.19{col 47}{space 3}0.029{col 55}{space 4} .0046182{col 68}{space 3} .0840811
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-13.13347{col 27}{space 2} 5.645609{col 38}{space 1}   -2.33{col 47}{space 3}0.020{col 55}{space 4}-24.19866{col 68}{space 3}-2.068283
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}510_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0131984{col 27}{space 2} .0392617{col 38}{space 1}    0.34{col 47}{space 3}0.737{col 55}{space 4} -.063753{col 68}{space 3} .0901499
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-5.596198{col 27}{space 2} 10.29842{col 38}{space 1}   -0.54{col 47}{space 3}0.587{col 55}{space 4}-25.78072{col 68}{space 3} 14.58833
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}510_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0545087{col 27}{space 2} .0269905{col 38}{space 1}    2.02{col 47}{space 3}0.043{col 55}{space 4} .0016083{col 68}{space 3} .1074092
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-17.33811{col 27}{space 2} 8.142427{col 38}{space 1}   -2.13{col 47}{space 3}0.033{col 55}{space 4}-33.29697{col 68}{space 3}-1.379247
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}510_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0529262{col 27}{space 2} .0217323{col 38}{space 1}    2.44{col 47}{space 3}0.015{col 55}{space 4} .0103317{col 68}{space 3} .0955207
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-16.14884{col 27}{space 2} 6.315088{col 38}{space 1}   -2.56{col 47}{space 3}0.011{col 55}{space 4}-28.52619{col 68}{space 3}-3.771497
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}511_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0195277{col 27}{space 2} .0510292{col 38}{space 1}   -0.38{col 47}{space 3}0.702{col 55}{space 4}-.1195432{col 68}{space 3} .0804878
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 2.654989{col 27}{space 2} 12.53273{col 38}{space 1}    0.21{col 47}{space 3}0.832{col 55}{space 4}-21.90872{col 68}{space 3} 27.21869
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}512_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0342343{col 27}{space 2} .0199895{col 38}{space 1}    1.71{col 47}{space 3}0.087{col 55}{space 4}-.0049445{col 68}{space 3}  .073413
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -9.91784{col 27}{space 2} 5.398745{col 38}{space 1}   -1.84{col 47}{space 3}0.066{col 55}{space 4}-20.49919{col 68}{space 3} .6635045
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}513_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0131984{col 27}{space 2} .0294836{col 38}{space 1}    0.45{col 47}{space 3}0.654{col 55}{space 4}-.0445884{col 68}{space 3} .0709853
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-4.903051{col 27}{space 2} 7.708126{col 38}{space 1}   -0.64{col 47}{space 3}0.525{col 55}{space 4} -20.0107{col 68}{space 3}  10.2046
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}513_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0089722{col 27}{space 2} .0408944{col 38}{space 1}    0.22{col 47}{space 3}0.826{col 55}{space 4}-.0711794{col 68}{space 3} .0891238
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-4.495363{col 27}{space 2}  10.6177{col 38}{space 1}   -0.42{col 47}{space 3}0.672{col 55}{space 4}-25.30567{col 68}{space 3} 16.31494
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}514_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}  .030052{col 27}{space 2} .0253438{col 38}{space 1}    1.19{col 47}{space 3}0.236{col 55}{space 4}-.0196209{col 68}{space 3} .0797249
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-9.440144{col 27}{space 2} 6.894608{col 38}{space 1}   -1.37{col 47}{space 3}0.171{col 55}{space 4}-22.95333{col 68}{space 3}  4.07304
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}514_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0415866{col 27}{space 2} .0580049{col 38}{space 1}   -0.72{col 47}{space 3}0.473{col 55}{space 4} -.155274{col 68}{space 3} .0721008
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 7.945156{col 27}{space 2}  13.7925{col 38}{space 1}    0.58{col 47}{space 3}0.565{col 55}{space 4}-19.08764{col 68}{space 3} 34.97796
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}515_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0118332{col 27}{space 2} .0397906{col 38}{space 1}    0.30{col 47}{space 3}0.766{col 55}{space 4}-.0661549{col 68}{space 3} .0898213
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -5.23919{col 27}{space 2} 10.40205{col 38}{space 1}   -0.50{col 47}{space 3}0.614{col 55}{space 4}-25.62684{col 68}{space 3} 15.14846
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}516_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0253573{col 27}{space 2} .0211901{col 38}{space 1}    1.20{col 47}{space 3}0.231{col 55}{space 4}-.0161745{col 68}{space 3} .0668892
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}  -7.4562{col 27}{space 2} 5.632023{col 38}{space 1}   -1.32{col 47}{space 3}0.186{col 55}{space 4}-18.49476{col 68}{space 3} 3.582363
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}516_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0145226{col 27}{space 2} .0291437{col 38}{space 1}    0.50{col 47}{space 3}0.618{col 55}{space 4} -.042598{col 68}{space 3} .0716431
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-5.250628{col 27}{space 2} 7.641287{col 38}{space 1}   -0.69{col 47}{space 3}0.492{col 55}{space 4}-20.22727{col 68}{space 3} 9.726019
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}517_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0505399{col 27}{space 2} .0177682{col 38}{space 1}    2.84{col 47}{space 3}0.004{col 55}{space 4} .0157149{col 68}{space 3} .0853649
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-14.49332{col 27}{space 2} 4.903259{col 38}{space 1}   -2.96{col 47}{space 3}0.003{col 55}{space 4}-24.10353{col 68}{space 3}-4.883108
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}517_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}   .06803{col 27}{space 2} .0193975{col 38}{space 1}    3.51{col 47}{space 3}0.000{col 55}{space 4} .0300115{col 68}{space 3} .1060484
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-20.67989{col 27}{space 2} 5.799673{col 38}{space 1}   -3.57{col 47}{space 3}0.000{col 55}{space 4}-32.04704{col 68}{space 3} -9.31274
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}518_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0026094{col 27}{space 2} .0334787{col 38}{space 1}   -0.08{col 47}{space 3}0.938{col 55}{space 4}-.0682265{col 68}{space 3} .0630076
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-.8446293{col 27}{space 2}  8.48122{col 38}{space 1}   -0.10{col 47}{space 3}0.921{col 55}{space 4}-17.46751{col 68}{space 3} 15.77826
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}518_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0372831{col 27}{space 2} .0238518{col 38}{space 1}    1.56{col 47}{space 3}0.118{col 55}{space 4}-.0094655{col 68}{space 3} .0840317
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -11.4783{col 27}{space 2} 6.613763{col 38}{space 1}   -1.74{col 47}{space 3}0.083{col 55}{space 4}-24.44104{col 68}{space 3} 1.484435
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}518_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0610956{col 27}{space 2} .0265312{col 38}{space 1}    2.30{col 47}{space 3}0.021{col 55}{space 4} .0090955{col 68}{space 3} .1130957
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-19.45543{col 27}{space 2} 8.246131{col 38}{space 1}   -2.36{col 47}{space 3}0.018{col 55}{space 4}-35.61755{col 68}{space 3}-3.293314
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}601_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0430896{col 27}{space 2} .0165672{col 38}{space 1}    2.60{col 47}{space 3}0.009{col 55}{space 4} .0106184{col 68}{space 3} .0755608
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -11.6619{col 27}{space 2} 4.419466{col 38}{space 1}   -2.64{col 47}{space 3}0.008{col 55}{space 4} -20.3239{col 68}{space 3}-2.999909
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}601_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}  .046417{col 27}{space 2} .0179816{col 38}{space 1}    2.58{col 47}{space 3}0.010{col 55}{space 4} .0111737{col 68}{space 3} .0816604
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-13.24015{col 27}{space 2} 4.924636{col 38}{space 1}   -2.69{col 47}{space 3}0.007{col 55}{space 4}-22.89226{col 68}{space 3}-3.588043
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}601_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0287029{col 27}{space 2} .0256485{col 38}{space 1}    1.12{col 47}{space 3}0.263{col 55}{space 4}-.0215673{col 68}{space 3} .0789731
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-9.066784{col 27}{space 2} 6.953665{col 38}{space 1}   -1.30{col 47}{space 3}0.192{col 55}{space 4}-22.69572{col 68}{space 3} 4.562149
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}601_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0650506{col 27}{space 2} .0213536{col 38}{space 1}    3.05{col 47}{space 3}0.002{col 55}{space 4} .0231983{col 68}{space 3} .1069029
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-20.07532{col 27}{space 2} 6.490853{col 38}{space 1}   -3.09{col 47}{space 3}0.002{col 55}{space 4}-32.79716{col 68}{space 3}-7.353487
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}602_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0253573{col 27}{space 2} .0264322{col 38}{space 1}    0.96{col 47}{space 3}0.337{col 55}{space 4}-.0264488{col 68}{space 3} .0771635
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-8.149347{col 27}{space 2} 7.106829{col 38}{space 1}   -1.15{col 47}{space 3}0.252{col 55}{space 4}-22.07848{col 68}{space 3} 5.779781
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}602_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}  .027146{col 27}{space 2} .0227499{col 38}{space 1}    1.19{col 47}{space 3}0.233{col 55}{space 4} -.017443{col 68}{space 3}  .071735
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-8.232918{col 27}{space 2} 6.099993{col 38}{space 1}   -1.35{col 47}{space 3}0.177{col 55}{space 4}-20.18869{col 68}{space 3} 3.722849
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}603_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0074728{col 27}{space 2} .0309523{col 38}{space 1}    0.24{col 47}{space 3}0.809{col 55}{space 4}-.0531926{col 68}{space 3} .0681382
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-3.414625{col 27}{space 2} 7.995325{col 38}{space 1}   -0.43{col 47}{space 3}0.669{col 55}{space 4}-19.08517{col 68}{space 3} 12.25592
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}603_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0481255{col 27}{space 2} .0437395{col 38}{space 1}   -1.10{col 47}{space 3}0.271{col 55}{space 4}-.1338533{col 68}{space 3} .0376023
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 10.17487{col 27}{space 2} 10.35897{col 38}{space 1}    0.98{col 47}{space 3}0.326{col 55}{space 4}-10.12834{col 68}{space 3} 30.47808
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}603_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0354974{col 27}{space 2} .0409518{col 38}{space 1}   -0.87{col 47}{space 3}0.386{col 55}{space 4}-.1157614{col 68}{space 3} .0447667
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 7.195234{col 27}{space 2} 9.855427{col 38}{space 1}    0.73{col 47}{space 3}0.465{col 55}{space 4}-12.12105{col 68}{space 3} 26.51152
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}605_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}  .017664{col 27}{space 2} .0223722{col 38}{space 1}    0.79{col 47}{space 3}0.430{col 55}{space 4}-.0261846{col 68}{space 3} .0615127
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-5.387565{col 27}{space 2} 5.865992{col 38}{space 1}   -0.92{col 47}{space 3}0.358{col 55}{space 4} -16.8847{col 68}{space 3} 6.109567
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}605_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0043268{col 27}{space 2} .0317519{col 38}{space 1}    0.14{col 47}{space 3}0.892{col 55}{space 4}-.0579058{col 68}{space 3} .0665593
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-2.606123{col 27}{space 2} 8.150338{col 38}{space 1}   -0.32{col 47}{space 3}0.749{col 55}{space 4}-18.58049{col 68}{space 3} 13.36825
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}605_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0417932{col 27}{space 2} .0293445{col 38}{space 1}    1.42{col 47}{space 3}0.154{col 55}{space 4}-.0157211{col 68}{space 3} .0993074
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-13.47797{col 27}{space 2} 8.408348{col 38}{space 1}   -1.60{col 47}{space 3}0.109{col 55}{space 4}-29.95803{col 68}{space 3} 3.002084
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}606_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0510351{col 27}{space 2} .0218946{col 38}{space 1}    2.33{col 47}{space 3}0.020{col 55}{space 4} .0081225{col 68}{space 3} .0939477
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-15.56216{col 27}{space 2} 6.322865{col 38}{space 1}   -2.46{col 47}{space 3}0.014{col 55}{space 4}-27.95475{col 68}{space 3}-3.169569
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}606_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0424462{col 27}{space 2} .0291804{col 38}{space 1}    1.45{col 47}{space 3}0.146{col 55}{space 4}-.0147464{col 68}{space 3} .0996387
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-13.66963{col 27}{space 2} 8.381838{col 38}{space 1}   -1.63{col 47}{space 3}0.103{col 55}{space 4}-30.09773{col 68}{space 3} 2.758473
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}606_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0287029{col 27}{space 2} .0334001{col 38}{space 1}    0.86{col 47}{space 3}0.390{col 55}{space 4}-.0367601{col 68}{space 3} .0941659
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-9.759931{col 27}{space 2} 9.149898{col 38}{space 1}   -1.07{col 47}{space 3}0.286{col 55}{space 4} -27.6934{col 68}{space 3}  8.17354
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}606_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0287029{col 27}{space 2} .0334001{col 38}{space 1}    0.86{col 47}{space 3}0.390{col 55}{space 4}-.0367601{col 68}{space 3} .0941659
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-9.759931{col 27}{space 2} 9.149898{col 38}{space 1}   -1.07{col 47}{space 3}0.286{col 55}{space 4} -27.6934{col 68}{space 3}  8.17354
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}607_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0018307{col 27}{space 2} .0323797{col 38}{space 1}    0.06{col 47}{space 3}0.955{col 55}{space 4}-.0616323{col 68}{space 3} .0652938
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -1.96902{col 27}{space 2} 8.271279{col 38}{space 1}   -0.24{col 47}{space 3}0.812{col 55}{space 4}-18.18043{col 68}{space 3} 14.24239
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}607_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0227774{col 27}{space 2} .0355745{col 38}{space 1}    0.64{col 47}{space 3}0.522{col 55}{space 4}-.0469474{col 68}{space 3} .0925021
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-8.142715{col 27}{space 2} 9.573753{col 38}{space 1}   -0.85{col 47}{space 3}0.395{col 55}{space 4}-26.90693{col 68}{space 3}  10.6215
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}610_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0026094{col 27}{space 2} .0334787{col 38}{space 1}   -0.08{col 47}{space 3}0.938{col 55}{space 4}-.0682265{col 68}{space 3} .0630076
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-.8446293{col 27}{space 2}  8.48122{col 38}{space 1}   -0.10{col 47}{space 3}0.921{col 55}{space 4}-17.46751{col 68}{space 3} 15.77826
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}610_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0424462{col 27}{space 2} .0291804{col 38}{space 1}    1.45{col 47}{space 3}0.146{col 55}{space 4}-.0147464{col 68}{space 3} .0996387
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-13.66963{col 27}{space 2} 8.381838{col 38}{space 1}   -1.63{col 47}{space 3}0.103{col 55}{space 4}-30.09773{col 68}{space 3} 2.758473
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}612_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0513086{col 27}{space 2}  .027407{col 38}{space 1}    1.87{col 47}{space 3}0.061{col 55}{space 4}-.0024081{col 68}{space 3} .1050252
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-16.33973{col 27}{space 2} 8.155449{col 38}{space 1}   -2.00{col 47}{space 3}0.045{col 55}{space 4}-32.32412{col 68}{space 3}-.3553448
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}612_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0565743{col 27}{space 2} .0267883{col 38}{space 1}    2.11{col 47}{space 3}0.035{col 55}{space 4} .0040702{col 68}{space 3} .1090784
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-17.99287{col 27}{space 2} 8.155491{col 38}{space 1}   -2.21{col 47}{space 3}0.027{col 55}{space 4}-33.97734{col 68}{space 3}-2.008405
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}701_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0291076{col 27}{space 2} .0173455{col 38}{space 1}    1.68{col 47}{space 3}0.093{col 55}{space 4} -.004889{col 68}{space 3} .0631042
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-7.674498{col 27}{space 2} 4.560224{col 38}{space 1}   -1.68{col 47}{space 3}0.092{col 55}{space 4}-16.61237{col 68}{space 3} 1.263378
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}701_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0390765{col 27}{space 2} .0208919{col 38}{space 1}    1.87{col 47}{space 3}0.061{col 55}{space 4}-.0018709{col 68}{space 3} .0800239
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-11.58887{col 27}{space 2} 5.747987{col 38}{space 1}   -2.02{col 47}{space 3}0.044{col 55}{space 4}-22.85472{col 68}{space 3}-.3230218
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}701_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}  .018265{col 27}{space 2} .0281882{col 38}{space 1}    0.65{col 47}{space 3}0.517{col 55}{space 4}-.0369828{col 68}{space 3} .0735128
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-6.240425{col 27}{space 2} 7.452954{col 38}{space 1}   -0.84{col 47}{space 3}0.402{col 55}{space 4}-20.84795{col 68}{space 3} 8.367097
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}701_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}  .044967{col 27}{space 2} .0225964{col 38}{space 1}    1.99{col 47}{space 3}0.047{col 55}{space 4} .0006789{col 68}{space 3} .0892552
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -13.7226{col 27}{space 2} 6.404091{col 38}{space 1}   -2.14{col 47}{space 3}0.032{col 55}{space 4}-26.27439{col 68}{space 3}-1.170813
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}702_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.6164894{col 27}{space 2} .4715147{col 38}{space 1}   -1.31{col 47}{space 3}0.191{col 55}{space 4}-1.540641{col 68}{space 3} .3076625
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 128.9108{col 27}{space 2} 96.54568{col 38}{space 1}    1.34{col 47}{space 3}0.182{col 55}{space 4}-60.31528{col 68}{space 3} 318.1368
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}702_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0145226{col 27}{space 2} .0387481{col 38}{space 1}    0.37{col 47}{space 3}0.708{col 55}{space 4}-.0614223{col 68}{space 3} .0904674
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-5.943775{col 27}{space 2} 10.19763{col 38}{space 1}   -0.58{col 47}{space 3}0.560{col 55}{space 4}-25.93077{col 68}{space 3} 14.04322
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}703_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0903233{col 27}{space 2} .0750396{col 38}{space 1}   -1.20{col 47}{space 3}0.229{col 55}{space 4}-.2373982{col 68}{space 3} .0567516
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 19.12915{col 27}{space 2} 16.93698{col 38}{space 1}    1.13{col 47}{space 3}0.259{col 55}{space 4}-14.06673{col 68}{space 3} 52.32503
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}704_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0007898{col 27}{space 2} .0445656{col 38}{space 1}   -0.02{col 47}{space 3}0.986{col 55}{space 4}-.0881368{col 68}{space 3} .0865571
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-1.997219{col 27}{space 2} 11.32621{col 38}{space 1}   -0.18{col 47}{space 3}0.860{col 55}{space 4}-24.19619{col 68}{space 3} 20.20175
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}705_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0148728{col 27}{space 2} .0494925{col 38}{space 1}   -0.30{col 47}{space 3}0.764{col 55}{space 4}-.1118762{col 68}{space 3} .0821307
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 1.514583{col 27}{space 2} 12.25059{col 38}{space 1}    0.12{col 47}{space 3}0.902{col 55}{space 4}-22.49614{col 68}{space 3} 25.52531
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}705_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0354974{col 27}{space 2} .0560986{col 38}{space 1}   -0.63{col 47}{space 3}0.527{col 55}{space 4}-.1454485{col 68}{space 3} .0744538
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 6.502086{col 27}{space 2} 13.44976{col 38}{space 1}    0.48{col 47}{space 3}0.629{col 55}{space 4}-19.85896{col 68}{space 3} 32.86313
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}705_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0287029{col 27}{space 2} .0224783{col 38}{space 1}    1.28{col 47}{space 3}0.202{col 55}{space 4}-.0153538{col 68}{space 3} .0727596
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-8.661319{col 27}{space 2} 6.046851{col 38}{space 1}   -1.43{col 47}{space 3}0.152{col 55}{space 4}-20.51293{col 68}{space 3}  3.19029
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}706_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0221321{col 27}{space 2}  .020385{col 38}{space 1}    1.09{col 47}{space 3}0.278{col 55}{space 4}-.0178218{col 68}{space 3}  .062086
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-6.359248{col 27}{space 2} 5.368632{col 38}{space 1}   -1.18{col 47}{space 3}0.236{col 55}{space 4}-16.88157{col 68}{space 3} 4.163077
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}706_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0446593{col 27}{space 2} .0226391{col 38}{space 1}    1.97{col 47}{space 3}0.049{col 55}{space 4} .0002875{col 68}{space 3} .0890312
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-13.63099{col 27}{space 2} 6.410343{col 38}{space 1}   -2.13{col 47}{space 3}0.033{col 55}{space 4}-26.19503{col 68}{space 3}-1.066953
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}706_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0369146{col 27}{space 2} .0239212{col 38}{space 1}    1.54{col 47}{space 3}0.123{col 55}{space 4}  -.00997{col 68}{space 3} .0837993
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-11.37283{col 27}{space 2} 6.626361{col 38}{space 1}   -1.72{col 47}{space 3}0.086{col 55}{space 4}-24.36026{col 68}{space 3} 1.614601
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}707_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0268269{col 27}{space 2} .0340733{col 38}{space 1}    0.79{col 47}{space 3}0.431{col 55}{space 4}-.0399555{col 68}{space 3} .0936093
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-9.244044{col 27}{space 2} 9.280344{col 38}{space 1}   -1.00{col 47}{space 3}0.319{col 55}{space 4}-27.43318{col 68}{space 3} 8.945096
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}707_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.1146007{col 27}{space 2} .0855767{col 38}{space 1}   -1.34{col 47}{space 3}0.181{col 55}{space 4}-.2823279{col 68}{space 3} .0531266
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 24.51661{col 27}{space 2} 18.96098{col 38}{space 1}    1.29{col 47}{space 3}0.196{col 55}{space 4}-12.64624{col 68}{space 3} 61.67945
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}708_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0148728{col 27}{space 2} .0494925{col 38}{space 1}   -0.30{col 47}{space 3}0.764{col 55}{space 4}-.1118762{col 68}{space 3} .0821307
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 1.514583{col 27}{space 2} 12.25059{col 38}{space 1}    0.12{col 47}{space 3}0.902{col 55}{space 4}-22.49614{col 68}{space 3} 25.52531
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}709_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0118332{col 27}{space 2} .0397906{col 38}{space 1}    0.30{col 47}{space 3}0.766{col 55}{space 4}-.0661549{col 68}{space 3} .0898213
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -5.23919{col 27}{space 2} 10.40205{col 38}{space 1}   -0.50{col 47}{space 3}0.614{col 55}{space 4}-25.62684{col 68}{space 3} 15.14846
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}710_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0148728{col 27}{space 2} .0494925{col 38}{space 1}   -0.30{col 47}{space 3}0.764{col 55}{space 4}-.1118762{col 68}{space 3} .0821307
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 1.514583{col 27}{space 2} 12.25059{col 38}{space 1}    0.12{col 47}{space 3}0.902{col 55}{space 4}-22.49614{col 68}{space 3} 25.52531
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}710_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0330266{col 27}{space 2} .0217654{col 38}{space 1}    1.52{col 47}{space 3}0.129{col 55}{space 4}-.0096329{col 68}{space 3} .0756861
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-9.865271{col 27}{space 2} 5.909199{col 38}{space 1}   -1.67{col 47}{space 3}0.095{col 55}{space 4}-21.44709{col 68}{space 3} 1.716546
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}711_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0044895{col 27}{space 2} .0459042{col 38}{space 1}   -0.10{col 47}{space 3}0.922{col 55}{space 4}  -.09446{col 68}{space 3}  .085481
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-1.064943{col 27}{space 2} 11.58051{col 38}{space 1}   -0.09{col 47}{space 3}0.927{col 55}{space 4}-23.76232{col 68}{space 3} 21.63244
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}711_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0958206{col 27}{space 2} .0772884{col 38}{space 1}   -1.24{col 47}{space 3}0.215{col 55}{space 4} -.247303{col 68}{space 3} .0556618
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 20.35777{col 27}{space 2} 17.36501{col 38}{space 1}    1.17{col 47}{space 3}0.241{col 55}{space 4}-13.67703{col 68}{space 3} 54.39257
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}712_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.1218205{col 27}{space 2} .0890157{col 38}{space 1}   -1.37{col 47}{space 3}0.171{col 55}{space 4}-.2962881{col 68}{space 3} .0526472
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 26.10131{col 27}{space 2} 19.62993{col 38}{space 1}    1.33{col 47}{space 3}0.184{col 55}{space 4}-12.37264{col 68}{space 3} 64.57526
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}712_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0455764{col 27}{space 2} .0284547{col 38}{space 1}    1.60{col 47}{space 3}0.109{col 55}{space 4}-.0101938{col 68}{space 3} .1013467
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-14.59766{col 27}{space 2} 8.272358{col 38}{space 1}   -1.76{col 47}{space 3}0.078{col 55}{space 4}-30.81119{col 68}{space 3} 1.615859
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}801_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0128871{col 27}{space 2} .0173548{col 38}{space 1}    0.74{col 47}{space 3}0.458{col 55}{space 4}-.0211278{col 68}{space 3}  .046902
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-2.949713{col 27}{space 2} 4.470286{col 38}{space 1}   -0.66{col 47}{space 3}0.509{col 55}{space 4}-11.71131{col 68}{space 3} 5.811886
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}801_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0163462{col 27}{space 2} .0193932{col 38}{space 1}    0.84{col 47}{space 3}0.399{col 55}{space 4}-.0216638{col 68}{space 3} .0543562
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-4.478773{col 27}{space 2} 5.042977{col 38}{space 1}   -0.89{col 47}{space 3}0.374{col 55}{space 4}-14.36283{col 68}{space 3} 5.405281
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}801_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0121785{col 27}{space 2} .0232567{col 38}{space 1}    0.52{col 47}{space 3}0.601{col 55}{space 4}-.0334038{col 68}{space 3} .0577608
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-3.943052{col 27}{space 2} 6.040455{col 38}{space 1}   -0.65{col 47}{space 3}0.514{col 55}{space 4}-15.78213{col 68}{space 3} 7.896022
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}801_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}  .058097{col 27}{space 2} .0182517{col 38}{space 1}    3.18{col 47}{space 3}0.001{col 55}{space 4} .0223242{col 68}{space 3} .0938697
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -17.0946{col 27}{space 2} 5.184178{col 38}{space 1}   -3.30{col 47}{space 3}0.001{col 55}{space 4} -27.2554{col 68}{space 3}-6.933797
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}803_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0296076{col 27}{space 2} .0330817{col 38}{space 1}    0.89{col 47}{space 3}0.371{col 55}{space 4}-.0352313{col 68}{space 3} .0944465
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-10.01007{col 27}{space 2} 9.088555{col 38}{space 1}   -1.10{col 47}{space 3}0.271{col 55}{space 4}-27.82331{col 68}{space 3} 7.803171
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}804_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0903233{col 27}{space 2} .0750396{col 38}{space 1}   -1.20{col 47}{space 3}0.229{col 55}{space 4}-.2373982{col 68}{space 3} .0567516
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 19.12915{col 27}{space 2} 16.93698{col 38}{space 1}    1.13{col 47}{space 3}0.259{col 55}{space 4}-14.06673{col 68}{space 3} 52.32503
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}805_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0026762{col 27}{space 2} .0432834{col 38}{space 1}    0.06{col 47}{space 3}0.951{col 55}{space 4}-.0821576{col 68}{space 3}   .08751
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-2.877561{col 27}{space 2} 11.08048{col 38}{space 1}   -0.26{col 47}{space 3}0.795{col 55}{space 4} -24.5949{col 68}{space 3} 18.83978
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}806_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0627976{col 27}{space 2}  .064883{col 38}{space 1}   -0.97{col 47}{space 3}0.333{col 55}{space 4}-.1899659{col 68}{space 3} .0643708
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 12.88487{col 27}{space 2} 15.04007{col 38}{space 1}    0.86{col 47}{space 3}0.392{col 55}{space 4}-16.59313{col 68}{space 3} 42.36287
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}901_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0271124{col 27}{space 2}  .053464{col 38}{space 1}   -0.51{col 47}{space 3}0.612{col 55}{space 4}-.1318999{col 68}{space 3} .0776752
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 4.494088{col 27}{space 2} 12.97508{col 38}{space 1}    0.35{col 47}{space 3}0.729{col 55}{space 4} -20.9366{col 68}{space 3} 29.92478
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}901_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0097043{col 27}{space 2} .0303811{col 38}{space 1}    0.32{col 47}{space 3}0.749{col 55}{space 4}-.0498415{col 68}{space 3} .0692502
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-3.992019{col 27}{space 2} 7.883969{col 38}{space 1}   -0.51{col 47}{space 3}0.613{col 55}{space 4}-19.44431{col 68}{space 3} 11.46028
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}901_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0111346{col 27}{space 2} .0300139{col 38}{space 1}    0.37{col 47}{space 3}0.711{col 55}{space 4}-.0476916{col 68}{space 3} .0699608
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-4.363884{col 27}{space 2} 7.812148{col 38}{space 1}   -0.56{col 47}{space 3}0.576{col 55}{space 4}-19.67541{col 68}{space 3} 10.94764
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}901_science   {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0705502{col 27}{space 2} .0268227{col 38}{space 1}    2.63{col 47}{space 3}0.009{col 55}{space 4} .0179786{col 68}{space 3} .1231217
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-22.64672{col 27}{space 2} 8.728743{col 38}{space 1}   -2.59{col 47}{space 3}0.009{col 55}{space 4}-39.75474{col 68}{space 3}  -5.5387
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}902_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}  .035019{col 27}{space 2} .0242904{col 38}{space 1}    1.44{col 47}{space 3}0.149{col 55}{space 4}-.0125894{col 68}{space 3} .0826274
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-10.83306{col 27}{space 2} 6.694341{col 38}{space 1}   -1.62{col 47}{space 3}0.106{col 55}{space 4}-23.95373{col 68}{space 3} 2.287609
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}903_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0851338{col 27}{space 2} .0729881{col 38}{space 1}   -1.17{col 47}{space 3}0.243{col 55}{space 4}-.2281878{col 68}{space 3} .0579202
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 17.96413{col 27}{space 2} 16.54876{col 38}{space 1}    1.09{col 47}{space 3}0.278{col 55}{space 4}-14.47084{col 68}{space 3}  50.3991
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}903_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0277764{col 27}{space 2} .0337305{col 38}{space 1}    0.82{col 47}{space 3}0.410{col 55}{space 4}-.0383342{col 68}{space 3} .0938869
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -9.50467{col 27}{space 2} 9.213809{col 38}{space 1}   -1.03{col 47}{space 3}0.302{col 55}{space 4} -27.5634{col 68}{space 3} 8.554064
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}904_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0415866{col 27}{space 2} .0355337{col 38}{space 1}   -1.17{col 47}{space 3}0.242{col 55}{space 4}-.1112313{col 68}{space 3} .0280581
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 9.043769{col 27}{space 2} 8.514561{col 38}{space 1}    1.06{col 47}{space 3}0.288{col 55}{space 4}-7.644465{col 68}{space 3}   25.732
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}904_economics {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0262319{col 27}{space 2} .0328232{col 38}{space 1}   -0.80{col 47}{space 3}0.424{col 55}{space 4}-.0905642{col 68}{space 3} .0381004
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 5.380351{col 27}{space 2} 8.023828{col 38}{space 1}    0.67{col 47}{space 3}0.503{col 55}{space 4}-10.34606{col 68}{space 3} 21.10677
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}904_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0030939{col 27}{space 2} .0247399{col 38}{space 1}    0.13{col 47}{space 3}0.900{col 55}{space 4}-.0453954{col 68}{space 3} .0515831
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} -1.59782{col 27}{space 2} 6.329166{col 38}{space 1}   -0.25{col 47}{space 3}0.801{col 55}{space 4}-14.00276{col 68}{space 3} 10.80712
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}905_arts      {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0458783{col 27}{space 2} .0224739{col 38}{space 1}    2.04{col 47}{space 3}0.041{col 55}{space 4} .0018303{col 68}{space 3} .0899263
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-13.99485{col 27}{space 2} 6.386725{col 38}{space 1}   -2.19{col 47}{space 3}0.028{col 55}{space 4} -26.5126{col 68}{space 3}-1.477099
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}905_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2}-.0195277{col 27}{space 2} .0282895{col 38}{space 1}   -0.69{col 47}{space 3}0.490{col 55}{space 4}-.0749741{col 68}{space 3} .0359187
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2} 4.041283{col 27}{space 2} 6.995356{col 38}{space 1}    0.58{col 47}{space 3}0.563{col 55}{space 4}-9.669362{col 68}{space 3} 17.75193
+{txt}{hline 14}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}907_others    {txt}{c |}
+{space 8}score {c |}{col 15}{res}{space 2} .0461783{col 27}{space 2} .0283272{col 38}{space 1}    1.63{col 47}{space 3}0.103{col 55}{space 4} -.009342{col 68}{space 3} .1016986
+{txt}{space 8}_cons {c |}{col 15}{res}{space 2}-14.77793{col 27}{space 2} 8.254816{col 38}{space 1}   -1.79{col 47}{space 3}0.073{col 55}{space 4}-30.95707{col 68}{space 3} 1.401215
+{txt}{hline 14}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+{com}. 
