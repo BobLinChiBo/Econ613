@@ -438,13 +438,10 @@ colnames(own_marginal_effect_average_q6) = paste("marginal_effect_on_prob", choi
 own_marginal_effect_average_q6[1:5, 1:5]
 
 ### 7
-# Using model 2 would be more appropriate to see the effect of excluding "others".
-# Model 2 studies the effect school-program quality on students' choices.
-# When excluding "others", the relative school-program quality changes.
-# Hence, we can see if such change has influence on the probability of students' choices.
-# On the other hand, model 1 studies the effect of each student's own score on his choice.
-# In particular, the model studies whether student choosing certain choices have higher or lower scores compared with the base choice.
-# Then, excluding "others" and comparing the results does not give much economic sense.
+# Using model 2 (conditional logit regression) would be more appropriate to see the effect of excluding "others".
+# Model 2 treats all individuals as if they have the same utility function (the same coefficients), 
+# while model 1 treats each group of individuals (grouped by different choices they made) differently (different coefficients for each group).  
+# Hence, even after excluding "others", we can still use model 2 to calculate each individual's choice probability.
 utility <- choices_utility(coefficients = own_result_q6$par, type = "conditional", choices = choices_q6, data = ind_recode_quality_first_d.sample, change_by_choice = 1)
 prob <- 
   choices_prob(result_data = utility, choices = choices_q6) %>% 
@@ -469,6 +466,12 @@ for (choice in choices_q6_exclude %>% pull(1)) {
 compare_base_prob_b <- compare_base_prob %>% select(!ends_with("others"))
 compare_base_prob_b
 compare_base_prob_ex
+average_b <- compare_base_prob_b %>% summarise_all(mean)
+average_ex <- compare_base_prob_ex %>% summarise_all(mean)
+average_b
+average_ex
 # How many times of each individual's predicted choices probability after exclusion are compared with before exclusion 
-(compare_base_prob_ex / compare_base_prob_b)[1:5,1:20]
+(compare_base_prob_ex / compare_base_prob_b)[1:5,1:20] 
+(compare_base_prob_ex / compare_base_prob_b) %>% summarise_all(mean)
+
 

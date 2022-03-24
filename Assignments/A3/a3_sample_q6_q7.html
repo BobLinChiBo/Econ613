@@ -11,7 +11,7 @@
 
 <meta name="author" content="Administrator" />
 
-<meta name="date" content="2022-03-23" />
+<meta name="date" content="2022-03-24" />
 
 <title>a3.R</title>
 
@@ -365,7 +365,7 @@ pre code {
 
 <h1 class="title toc-ignore">a3.R</h1>
 <h4 class="author">Administrator</h4>
-<h4 class="date">2022-03-23</h4>
+<h4 class="date">2022-03-24</h4>
 
 </div>
 
@@ -1131,13 +1131,10 @@ own_marginal_effect_average_q6[1:5, 1:5]</code></pre>
 ## relative_quality_change_in_101_arts                                0.028643883
 ## relative_quality_change_in_101_economics                          -0.975680278</code></pre>
 <pre class="r"><code>### 7
-# Using model 2 would be more appropriate to see the effect of excluding &quot;others&quot;.
-# Model 2 studies the effect school-program quality on students&#39; choices.
-# When excluding &quot;others&quot;, the relative school-program quality changes.
-# Hence, we can see if such change has influence on the probability of students&#39; choices.
-# On the other hand, model 1 studies the effect of each student&#39;s own score on his choice.
-# In particular, the model studies whether student choosing certain choices have higher or lower scores compared with the base choice.
-# Then, excluding &quot;others&quot; and comparing the results does not give much economic sense.
+# Using model 2 (conditional logit regression) would be more appropriate to see the effect of excluding &quot;others&quot;.
+# Model 2 treats all individuals as if they have the same utility function (the same coefficients), 
+# while model 1 treats each group of individuals (grouped by different choices they made) differently (different coefficients for each group).  
+# Hence, even after excluding &quot;others&quot;, we can still use model 2 to calculate each individual&#39;s choice probability.
 utility &lt;- choices_utility(coefficients = own_result_q6$par, type = &quot;conditional&quot;, choices = choices_q6, data = ind_recode_quality_first_d.sample, change_by_choice = 1)
 prob &lt;- 
   choices_prob(result_data = utility, choices = choices_q6) %&gt;% 
@@ -1202,8 +1199,34 @@ compare_base_prob_b</code></pre>
 ## #   choice_prob_104_arts &lt;dbl&gt;, choice_prob_104_economics &lt;dbl&gt;,
 ## #   choice_prob_104_science &lt;dbl&gt;, choice_prob_105_arts &lt;dbl&gt;,
 ## #   choice_prob_105_economics &lt;dbl&gt;, choice_prob_201_arts &lt;dbl&gt;, ...</code></pre>
+<pre class="r"><code>average_b &lt;- compare_base_prob_b %&gt;% summarise_all(mean)
+average_ex &lt;- compare_base_prob_ex %&gt;% summarise_all(mean)
+average_b</code></pre>
+<pre><code>## # A tibble: 1 x 316
+##   choice_prob_100_arts choice_prob_100_econom~ choice_prob_100~ choice_prob_101~
+##                  &lt;dbl&gt;                   &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+## 1               0.0140                 0.00311          0.00622           0.0249
+## # ... with 312 more variables: choice_prob_101_economics &lt;dbl&gt;,
+## #   choice_prob_101_science &lt;dbl&gt;, choice_prob_102_arts &lt;dbl&gt;,
+## #   choice_prob_102_economics &lt;dbl&gt;, choice_prob_103_arts &lt;dbl&gt;,
+## #   choice_prob_103_economics &lt;dbl&gt;, choice_prob_104_arts &lt;dbl&gt;,
+## #   choice_prob_104_economics &lt;dbl&gt;, choice_prob_104_science &lt;dbl&gt;,
+## #   choice_prob_105_arts &lt;dbl&gt;, choice_prob_105_economics &lt;dbl&gt;,
+## #   choice_prob_201_arts &lt;dbl&gt;, choice_prob_201_economics &lt;dbl&gt;, ...</code></pre>
+<pre class="r"><code>average_ex</code></pre>
+<pre><code>## # A tibble: 1 x 316
+##   choice_prob_100_arts choice_prob_100_econom~ choice_prob_100~ choice_prob_101~
+##                  &lt;dbl&gt;                   &lt;dbl&gt;            &lt;dbl&gt;            &lt;dbl&gt;
+## 1               0.0164                 0.00367          0.00708           0.0275
+## # ... with 312 more variables: choice_prob_101_economics &lt;dbl&gt;,
+## #   choice_prob_101_science &lt;dbl&gt;, choice_prob_102_arts &lt;dbl&gt;,
+## #   choice_prob_102_economics &lt;dbl&gt;, choice_prob_103_arts &lt;dbl&gt;,
+## #   choice_prob_103_economics &lt;dbl&gt;, choice_prob_104_arts &lt;dbl&gt;,
+## #   choice_prob_104_economics &lt;dbl&gt;, choice_prob_104_science &lt;dbl&gt;,
+## #   choice_prob_105_arts &lt;dbl&gt;, choice_prob_105_economics &lt;dbl&gt;,
+## #   choice_prob_201_arts &lt;dbl&gt;, choice_prob_201_economics &lt;dbl&gt;, ...</code></pre>
 <pre class="r"><code># How many times of each individual&#39;s predicted choices probability after exclusion are compared with before exclusion 
-(compare_base_prob_ex / compare_base_prob_b)[1:5,1:20]</code></pre>
+(compare_base_prob_ex / compare_base_prob_b)[1:5,1:20] </code></pre>
 <pre><code>##   choice_prob_100_arts choice_prob_100_economics choice_prob_100_science
 ## 1             1.075239                  1.075239                1.075239
 ## 2             1.212939                  1.212939                1.212939
@@ -1246,6 +1269,239 @@ compare_base_prob_b</code></pre>
 ## 3                  1.123182             1.123182
 ## 4                  1.194864             1.194864
 ## 5                  1.215717             1.215717</code></pre>
+<pre class="r"><code>(compare_base_prob_ex / compare_base_prob_b) %&gt;% summarise_all(mean)</code></pre>
+<pre><code>##   choice_prob_100_arts choice_prob_100_economics choice_prob_100_science
+## 1             1.135062                  1.135062                1.135062
+##   choice_prob_101_arts choice_prob_101_economics choice_prob_101_science
+## 1             1.135062                  1.135062                1.135062
+##   choice_prob_102_arts choice_prob_102_economics choice_prob_103_arts
+## 1             1.135062                  1.135062             1.135062
+##   choice_prob_103_economics choice_prob_104_arts choice_prob_104_economics
+## 1                  1.135062             1.135062                  1.135062
+##   choice_prob_104_science choice_prob_105_arts choice_prob_105_economics
+## 1                1.135062             1.135062                  1.135062
+##   choice_prob_201_arts choice_prob_201_economics choice_prob_201_science
+## 1             1.135062                  1.135062                1.135062
+##   choice_prob_202_economics choice_prob_203_arts choice_prob_203_economics
+## 1                  1.135062             1.135062                  1.135062
+##   choice_prob_203_science choice_prob_204_arts choice_prob_204_economics
+## 1                1.135062             1.135062                  1.135062
+##   choice_prob_204_science choice_prob_205_arts choice_prob_205_science
+## 1                1.135062             1.135062                1.135062
+##   choice_prob_206_arts choice_prob_206_economics choice_prob_208_arts
+## 1             1.135062                  1.135062             1.135062
+##   choice_prob_208_science choice_prob_210_arts choice_prob_210_economics
+## 1                1.135062             1.135062                  1.135062
+##   choice_prob_210_science choice_prob_211_arts choice_prob_211_science
+## 1                1.135062             1.135062                1.135062
+##   choice_prob_212_arts choice_prob_213_arts choice_prob_213_economics
+## 1             1.135062             1.135062                  1.135062
+##   choice_prob_214_economics choice_prob_215_arts choice_prob_301_arts
+## 1                  1.135062             1.135062             1.135062
+##   choice_prob_301_economics choice_prob_301_science choice_prob_302_economics
+## 1                  1.135062                1.133621                  1.135062
+##   choice_prob_303_arts choice_prob_303_economics choice_prob_303_science
+## 1             1.135062                  1.135062                1.132227
+##   choice_prob_304_arts choice_prob_304_economics choice_prob_305_arts
+## 1             1.135062                  1.135062             1.135062
+##   choice_prob_305_economics choice_prob_305_science choice_prob_306_arts
+## 1                  1.135062                1.135062             1.135062
+##   choice_prob_306_economics choice_prob_307_arts choice_prob_308_arts
+## 1                  1.135062             1.135062             1.135062
+##   choice_prob_308_economics choice_prob_309_arts choice_prob_309_economics
+## 1                  1.135062             1.135062                  1.135062
+##   choice_prob_309_science choice_prob_310_arts choice_prob_310_economics
+## 1                1.135062             1.135062                  1.135062
+##   choice_prob_311_arts choice_prob_312_arts choice_prob_312_economics
+## 1             1.135062             1.135062                  1.135062
+##   choice_prob_401_arts choice_prob_401_economics choice_prob_401_science
+## 1             1.135062                  1.135062                1.135062
+##   choice_prob_402_economics choice_prob_402_science choice_prob_403_economics
+## 1                  1.135062                1.135062                  1.135062
+##   choice_prob_405_economics choice_prob_407_arts choice_prob_407_economics
+## 1                  1.135062             1.135062                  1.135062
+##   choice_prob_409_economics choice_prob_501_arts choice_prob_501_economics
+## 1                  1.135062             1.135062                  1.135062
+##   choice_prob_501_science choice_prob_502_arts choice_prob_502_economics
+## 1                1.135062             1.135062                  1.135062
+##   choice_prob_503_arts choice_prob_503_economics choice_prob_503_science
+## 1             1.135062                  1.135062                1.135062
+##   choice_prob_504_economics choice_prob_505_arts choice_prob_505_economics
+## 1                  1.135062             1.135062                  1.135062
+##   choice_prob_506_arts choice_prob_506_economics choice_prob_507_arts
+## 1             1.135062                  1.135062             1.135062
+##   choice_prob_510_arts choice_prob_510_economics choice_prob_510_science
+## 1             1.135062                  1.135062                1.135062
+##   choice_prob_511_economics choice_prob_512_arts choice_prob_513_arts
+## 1                  1.135062             1.135062             1.135062
+##   choice_prob_513_economics choice_prob_514_arts choice_prob_514_economics
+## 1                  1.135062             1.135062                  1.135062
+##   choice_prob_516_arts choice_prob_516_economics choice_prob_517_arts
+## 1             1.135062                  1.135062             1.135062
+##   choice_prob_517_economics choice_prob_518_arts choice_prob_518_economics
+## 1                  1.135062             1.135062                  1.135062
+##   choice_prob_601_arts choice_prob_601_economics choice_prob_601_science
+## 1             1.135062                  1.135062                1.135062
+##   choice_prob_602_arts choice_prob_602_economics choice_prob_603_arts
+## 1             1.135062                  1.135062             1.135062
+##   choice_prob_603_economics choice_prob_605_arts choice_prob_605_economics
+## 1                  1.135062             1.135062                  1.135062
+##   choice_prob_606_arts choice_prob_606_economics choice_prob_606_science
+## 1             1.135062                  1.135062                1.135062
+##   choice_prob_607_arts choice_prob_607_economics choice_prob_610_arts
+## 1             1.135062                  1.135062             1.135062
+##   choice_prob_610_economics choice_prob_612_arts choice_prob_612_economics
+## 1                  1.135062             1.135062                  1.135062
+##   choice_prob_701_arts choice_prob_701_economics choice_prob_701_science
+## 1             1.135062                  1.135062                1.135062
+##   choice_prob_702_arts choice_prob_702_economics choice_prob_703_arts
+## 1             1.135062                  1.135062             1.135062
+##   choice_prob_705_arts choice_prob_705_economics choice_prob_705_science
+## 1             1.135062                  1.135062                1.135062
+##   choice_prob_706_arts choice_prob_706_economics choice_prob_706_science
+## 1             1.135062                  1.135062                1.135062
+##   choice_prob_707_arts choice_prob_707_science choice_prob_708_arts
+## 1             1.135062                1.135062             1.135062
+##   choice_prob_709_science choice_prob_710_arts choice_prob_710_economics
+## 1                1.135062             1.135062                  1.135062
+##   choice_prob_711_arts choice_prob_711_economics choice_prob_712_arts
+## 1             1.135062                  1.135062             1.135062
+##   choice_prob_712_economics choice_prob_801_arts choice_prob_801_economics
+## 1                  1.135062             1.135062                  1.135062
+##   choice_prob_801_science choice_prob_803_arts choice_prob_805_arts
+## 1                1.135062             1.135062             1.135062
+##   choice_prob_806_economics choice_prob_901_arts choice_prob_901_economics
+## 1                  1.133538             1.135062                  1.135062
+##   choice_prob_901_science choice_prob_903_arts choice_prob_904_arts
+## 1                1.135062             1.135062             1.135062
+##   choice_prob_904_economics choice_prob_905_arts relative_prob_100_arts
+## 1                  1.135062             1.135062                      1
+##   relative_prob_100_economics relative_prob_100_science relative_prob_101_arts
+## 1                           1                         1                      1
+##   relative_prob_101_economics relative_prob_101_science relative_prob_102_arts
+## 1                           1                         1                      1
+##   relative_prob_102_economics relative_prob_103_arts
+## 1                           1                      1
+##   relative_prob_103_economics relative_prob_104_arts
+## 1                           1                      1
+##   relative_prob_104_economics relative_prob_104_science relative_prob_105_arts
+## 1                           1                         1                      1
+##   relative_prob_105_economics relative_prob_201_arts
+## 1                           1                      1
+##   relative_prob_201_economics relative_prob_201_science
+## 1                           1                         1
+##   relative_prob_202_economics relative_prob_203_arts
+## 1                           1                      1
+##   relative_prob_203_economics relative_prob_203_science relative_prob_204_arts
+## 1                           1                         1                      1
+##   relative_prob_204_economics relative_prob_204_science relative_prob_205_arts
+## 1                           1                         1                      1
+##   relative_prob_205_science relative_prob_206_arts relative_prob_206_economics
+## 1                         1                      1                           1
+##   relative_prob_208_arts relative_prob_208_science relative_prob_210_arts
+## 1                      1                         1                      1
+##   relative_prob_210_economics relative_prob_210_science relative_prob_211_arts
+## 1                           1                         1                      1
+##   relative_prob_211_science relative_prob_212_arts relative_prob_213_arts
+## 1                         1                      1                      1
+##   relative_prob_213_economics relative_prob_214_economics
+## 1                           1                           1
+##   relative_prob_215_arts relative_prob_301_arts relative_prob_301_economics
+## 1                      1                      1                           1
+##   relative_prob_301_science relative_prob_302_economics relative_prob_303_arts
+## 1                 0.9989185                           1                      1
+##   relative_prob_303_economics relative_prob_303_science relative_prob_304_arts
+## 1                           1                 0.9978599                      1
+##   relative_prob_304_economics relative_prob_305_arts
+## 1                           1                      1
+##   relative_prob_305_economics relative_prob_305_science relative_prob_306_arts
+## 1                           1                         1                      1
+##   relative_prob_306_economics relative_prob_307_arts relative_prob_308_arts
+## 1                           1                      1                      1
+##   relative_prob_308_economics relative_prob_309_arts
+## 1                           1                      1
+##   relative_prob_309_economics relative_prob_309_science relative_prob_310_arts
+## 1                           1                         1                      1
+##   relative_prob_310_economics relative_prob_311_arts relative_prob_312_arts
+## 1                           1                      1                      1
+##   relative_prob_312_economics relative_prob_401_arts
+## 1                           1                      1
+##   relative_prob_401_economics relative_prob_401_science
+## 1                           1                         1
+##   relative_prob_402_economics relative_prob_402_science
+## 1                           1                         1
+##   relative_prob_403_economics relative_prob_405_economics
+## 1                           1                           1
+##   relative_prob_407_arts relative_prob_407_economics
+## 1                      1                           1
+##   relative_prob_409_economics relative_prob_501_arts
+## 1                           1                      1
+##   relative_prob_501_economics relative_prob_501_science relative_prob_502_arts
+## 1                           1                         1                      1
+##   relative_prob_502_economics relative_prob_503_arts
+## 1                           1                      1
+##   relative_prob_503_economics relative_prob_503_science
+## 1                           1                         1
+##   relative_prob_504_economics relative_prob_505_arts
+## 1                           1                      1
+##   relative_prob_505_economics relative_prob_506_arts
+## 1                           1                      1
+##   relative_prob_506_economics relative_prob_507_arts relative_prob_510_arts
+## 1                           1                      1                      1
+##   relative_prob_510_economics relative_prob_510_science
+## 1                           1                         1
+##   relative_prob_511_economics relative_prob_512_arts relative_prob_513_arts
+## 1                           1                      1                      1
+##   relative_prob_513_economics relative_prob_514_arts
+## 1                           1                      1
+##   relative_prob_514_economics relative_prob_516_arts
+## 1                           1                      1
+##   relative_prob_516_economics relative_prob_517_arts
+## 1                           1                      1
+##   relative_prob_517_economics relative_prob_518_arts
+## 1                           1                      1
+##   relative_prob_518_economics relative_prob_601_arts
+## 1                           1                      1
+##   relative_prob_601_economics relative_prob_601_science relative_prob_602_arts
+## 1                           1                         1                      1
+##   relative_prob_602_economics relative_prob_603_arts
+## 1                           1                      1
+##   relative_prob_603_economics relative_prob_605_arts
+## 1                           1                      1
+##   relative_prob_605_economics relative_prob_606_arts
+## 1                           1                      1
+##   relative_prob_606_economics relative_prob_606_science relative_prob_607_arts
+## 1                           1                         1                      1
+##   relative_prob_607_economics relative_prob_610_arts
+## 1                           1                      1
+##   relative_prob_610_economics relative_prob_612_arts
+## 1                           1                      1
+##   relative_prob_612_economics relative_prob_701_arts
+## 1                           1                      1
+##   relative_prob_701_economics relative_prob_701_science relative_prob_702_arts
+## 1                           1                         1                      1
+##   relative_prob_702_economics relative_prob_703_arts relative_prob_705_arts
+## 1                           1                      1                      1
+##   relative_prob_705_economics relative_prob_705_science relative_prob_706_arts
+## 1                           1                         1                      1
+##   relative_prob_706_economics relative_prob_706_science relative_prob_707_arts
+## 1                           1                         1                      1
+##   relative_prob_707_science relative_prob_708_arts relative_prob_709_science
+## 1                         1                      1                         1
+##   relative_prob_710_arts relative_prob_710_economics relative_prob_711_arts
+## 1                      1                           1                      1
+##   relative_prob_711_economics relative_prob_712_arts
+## 1                           1                      1
+##   relative_prob_712_economics relative_prob_801_arts
+## 1                           1                      1
+##   relative_prob_801_economics relative_prob_801_science relative_prob_803_arts
+## 1                           1                         1                      1
+##   relative_prob_805_arts relative_prob_806_economics relative_prob_901_arts
+## 1                      1                   0.9985405                      1
+##   relative_prob_901_economics relative_prob_901_science relative_prob_903_arts
+## 1                           1                         1                      1
+##   relative_prob_904_arts relative_prob_904_economics relative_prob_905_arts
+## 1                      1                           1                      1</code></pre>
 
 
 
