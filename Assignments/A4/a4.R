@@ -4,6 +4,7 @@ library(scales)
 library(sampleSelection)
 library(AER)
 library(plm)
+library(numDeriv)
 options(scipen=10, digit=20)
 ##### Exercise 1
 ### Q1 & Q2 Read and Organize Data
@@ -137,7 +138,6 @@ delta_i = delta_i[positive]
 variance_hat <- ((errors %*% errors) / length(errors) +  (inverse_mills_ratio_coef^2) * sum(delta_i, na.rm = TRUE) / length(errors))[1,1]
 X_outcome <- data[positive, c("(Intercept)", "gender", "married", "self_edu_degree_year", "all_parent_edu_year", "work_exp", "inverse_mills_ratio")]
 X_selection <- data[positive, c("(Intercept)", "age", "gender", "married", "number_child_under_18_in_house", "self_edu_degree_year", "all_parent_edu_year")]
-
 q <- (inverse_mills_ratio_coef / sqrt(variance_hat))
 delta_matrix <- delta_i * diag(length(delta_i))
 V <- vcov(selection_glm)
@@ -162,10 +162,10 @@ first_stage_estimates
 second_stage_estimates
 
 # compare with naive
-# Basically, the interpretation is the same as Q1 since the signs of coefficients have no change.
+# Basically, the interpretation is the same as Q1 since the signs of coefficients (except the intercept) have no change.
 # However, the magnitude of some coefficients change.
-# Main differences come from gender, married, and individual's education attainment
-# Such differences may result from these factors determine both individual's income and individual's choice of whether accepting a job 
+# Main differences come from gender, married, and individual's education attainment.
+# Such differences may result from these factors are correlated with the factors that determine both individual's income and individual's choice of whether accepting a job. 
 compare_estimates <- cbind(summary(naive_lm)$coefficients[,1:2], summary(outcome_lm)$coefficients[-length(selection_glm$coefficients), 1], adjusted_var[-length(outcome_lm$coefficients)])
 colnames(compare_estimates) = c("naive : est", "naive :se", "own : est", "own :se")
 compare_estimates
@@ -231,9 +231,8 @@ matrix_X <- X_positive %>%
   select(income, gender, married, self_edu_degree_year, all_parent_edu_year, work_exp) 
 matrix_X <- model.matrix(~ gender + married + self_edu_degree_year + all_parent_edu_year + work_exp, matrix_X)
 best_guess <- summary(tobit_tobit)$coefficients[,1]
-set.seed(1234)
-tobit_own <- max_log_likelihood(best_guess=best_guess,y = X_positive$income, matrix_X = matrix_X, right = 100000)
-hessian_own <- hessian(log_likelihood, tobit_own$par, y=X_positive$income,matrix_X = matrix_X, right = 100000)
+tobit_own <- max_log_likelihood(best_guess=best_guess, y = X_positive$income, matrix_X = matrix_X, right = 100000)
+hessian_own <- hessian(log_likelihood, tobit_own$par, y = X_positive$income, matrix_X = matrix_X, right = 100000)
 fisher_info_matrix <-  solve(-hessian_own)
 std_error <- sqrt(diag((fisher_info_matrix)))
 tobit_estimates <- cbind(summary(tobit_tobit)$coefficients[,1:2], tobit_own$par, std_error)
@@ -243,7 +242,7 @@ tobit_estimates
 ### Q4
 # Basically, the interpretation is the same as Exercise 3 Q1 since the signs of coefficients have no change.
 # However, the magnitude of some coefficients change.
-# Main differences come from gender and individual's and their parents' education attainment
+# Main differences come from gender and individual's and their parents' education attainment.
 compare_estimates <- cbind(summary(naive_lm)$coefficients[,1:2], tobit_own$par[-length(tobit_own$par)], std_error[-length(tobit_own$par)])
 colnames(compare_estimates) = c("naive : est", "naive :se", "own : est", "own :se")
 compare_estimates
@@ -274,7 +273,13 @@ panel <- raw_panel %>%
                                                                       x == 7 ~ 23,
                                                                       x == 8 ~ 19,
                                                                       x <= 0 ~ NA_real_), .names = "my_edu_{.col}"))
-         
+for (year in c(1997:2011, 2013, 2015, 2017, 2019)) {
+  panel <- panel %>% 
+    mutate("my_work_exp_y_{year}" := rowSums(across(starts_with("CV_WKSWK_JOB") & ends_with(toString(year)), function(x) x/52), na.rm = TRUE))
+}
+panel <- panel %>% mutate(across(starts_with("my_work_exp_y_"), function(x) case_when(x == 0 ~ NA_real_,
+                                                                             x != 0 ~ x)))
+
 ### Q1
 # Each individual has different ability. Such ability cannot be observable but correlated to their wages.
 # Then, when we regress their wages, their ability will be included in the error term.
@@ -287,77 +292,84 @@ panel_long <- panel %>%
   rename(id = PUBID_1997,
          education  = my_edu_self_edu_degree,
          income = my_income,
-         married = my_married_marital_status) %>% 
-  select(id, year, gender, income, education, married) %>%
+         married = my_married_marital_status,
+         work_exp = my_work_exp) %>% 
+  select(id, year, income, education, married, work_exp) %>%
   drop_na()
-
 panel_plm <- pdata.frame(panel_long, index = c("id", "year"))
 
-# between
+## between
 between_data <- panel_long %>% 
-  group_by(id) %>% summarise(gender = mean(as.numeric(gender)-1),
-                             mean_married = mean(married),
+  group_by(id) %>% summarise(mean_married = mean(married),
                              mean_income = mean(income),
-                             mean_education = mean(education))
-between_lm <- lm(mean_income ~ gender + mean_education + mean_married , data = between_data)
-summary(between_lm)
-between_plm <- plm(income ~  gender + education + married, data = panel_plm, model = "between")
-summary(between_plm)
+                             mean_education = mean(education),
+                             mean_work_exp = mean(work_exp))
+between_lm <- lm(mean_income ~ mean_education + mean_married + mean_work_exp, data = between_data)
+between_plm <- plm(income ~ education + factor(married) + work_exp, data = panel_plm, model = "between")
+compare_estimates <- cbind(summary(between_plm)$coefficients[,1:2], summary(between_lm)$coefficients[,1:2])
+colnames(compare_estimates) = c("plm : est", "plm :se", "own : est", "own :se")
+rownames(compare_estimates) = c("(Intercept)", "education", "married", "work_exp")
+compare_estimates
 
-# within
+## within
 within_data <- panel_long %>% 
   group_by(id) %>% 
+  mutate(count = n()) %>% 
+  filter(count > 1) %>% 
   mutate(mean_married = mean(married),
          mean_income = mean(income),
-         mean_education = mean(education)) %>% 
+         mean_education = mean(education),
+         mean_work_exp = mean(work_exp)) %>% 
   mutate(dif_income = income - mean_income,
          dif_education = education - mean_education,
-         dif_married = married - mean_married) %>% 
-  mutate(dif_income_check = dif_income != 0,
-         dif_education_check = dif_education != 0,
-         dif_married_check = dif_married != 0) %>% 
-  mutate(dif_income_fail = sum(dif_income_check) == 0,
-         dif_education_fail = sum(dif_education_check) == 0,
-         dif_married_fail = sum(dif_married_check) == 0) %>% 
-  filter(!dif_income_fail) %>% 
-  filter(!(dif_education_fail & dif_married_fail))
-within_lm <- lm(dif_income ~ -1 + dif_education + dif_married, data = within_data)
+         dif_married = married - mean_married,
+         dif_work_exp = work_exp - mean_work_exp) %>% 
+  distinct()
+within_lm <- lm(dif_income ~ -1 + dif_education + dif_married + dif_work_exp, data = within_data)
 summary(within_lm)
+# However, the standard errors need to be adjust since we estimate the means of each individual. Reference:https://www.stata.com/manuals/xtxtreg.pdf (Methods and formulas)
+n_individual <- within_data %>% select(id) %>%  n_distinct()
+adjust_std <- sqrt(summary(within_lm)$coefficients[,2]^2 * (summary(within_lm)$fstatistic[3])/ (summary(within_lm)$fstatistic[3] - n_individual))
+within_plm <- plm(income ~  education + factor(married) + work_exp, data = panel_plm, model = "within", effect = "individual")
+compare_estimates <- cbind(summary(within_plm)$coefficients[, 1:2], summary(within_lm)$coefficients[, 1], adjust_std)
+colnames(compare_estimates) = c("plm : est", "plm :se", "own : est", "own :se")
+rownames(compare_estimates) = c("education", "married", "work_exp")
+compare_estimates
 
-within_plm <- plm(income ~  education + married, data = panel_plm, model = "within")
-summary(within_plm)
-  
-  mutate(across(starts_with("my_income"), function(x) x - mean_income, .names = "dif_{col}"),
-         across(starts_with("my_edu"), function(x) x - mean_education, .names = "dif_{col}"),
-         across(starts_with("my_married"), function(x) x - mean_married, .names = "dif_{col}")) %>% 
-  pivot_longer(starts_with("dif_"), names_to = c(".value", "year"), names_sep = "_y_", values_drop_na = TRUE) %>% 
-  rename(dif_income = dif_my_income,
-         dif_education = dif_my_edu_self_edu_degree,
-         dif_married = dif_my_married_marital_status)
-within_lm <- lm(dif_income ~ dif_education + dif_married, data = panel_within)
-summary(within_lm)
-
-# first difference
-
-  
-between_lm <- lm(mean_income ~ gender + mean_education + mean_married , data = between_data)
-summary(between_lm)
-
+## first difference
+fd_data <- panel_long %>% 
+  group_by(id) %>% 
+  mutate(lead_income = dplyr::lead(income, order_by = year),
+         lead_education = dplyr::lead(education, order_by = year),
+         lead_married = dplyr::lead(married, order_by = year),
+         lead_work_exp = dplyr::lead(work_exp, order_by = year)) %>% 
+  mutate(dif_income = lead_income - income,
+         dif_education = lead_education - education,
+         dif_married = lead_married - married,
+         dif_work_exp = lead_work_exp - work_exp)
+fd_lm <- lm(dif_income ~ -1 + dif_education + dif_married + dif_work_exp, data = fd_data)
+fd_plm <- plm(income ~ -1 + education + relevel(factor(married), ref = "TRUE") + work_exp, data = panel_plm, model = "fd", effect = "individual")
+compare_estimates <- cbind(summary(fd_plm)$coefficients[, 1:2], summary(fd_lm)$coefficients[, 1:2])
+colnames(compare_estimates) = c("plm : est", "plm :se", "own : est", "own :se")
+rownames(compare_estimates) = c("education", "married", "work_exp")
+compare_estimates
 
 ### Q3
-between_plm <- plm(income ~ gender + education  , data = panel_plm, model = "between")
-summary(between_plm)
+# The signs of coefficients of all three estimators are the same.
+# They shows that, on average, while controlling other factors, 
+# people with higher education tend to have higher income;
+# married people tend to have higher income;
+# people with more working experience tend to have higher income.
+# However, the magnitudes of coefficients of these estimators are quite different.
+# We first have to note that theoretically, between estimator is quite different from other estimators.
+# the reason is that between estimator kind of estimates the time-average effect of factors on each person and discards other time variation information
+# while other two estimators assume each person has certain unobserved time invariant factors affecting his income.
+# By subtracting mean or value from last period, such factors can be eliminated. 
+# However, if those factors do change over time, then the two estimators cannot well deal with them and would result in missing variable bias.
+# For the same reason, subtracting mean or subtracting last period's value could have very different results (the two different estimators imply different amount of effect of unobserved time variant factors on each person's income).
+# Furthermore, since our panel data is unbalanced, such a problem is exacerbated.
+compare_estimates <- cbind(summary(between_lm)$coefficients[, 1], c(NA, summary(within_lm)$coefficients[, 1]), c(NA, summary(fd_lm)$coefficients[, 1]))
+colnames(compare_estimates) = c("between : own", "within :own", "fd : own")
+rownames(compare_estimates) = c("(Intercept)", "education", "married", "work_exp")
+compare_estimates
 
-panel_plm <- pdata.frame(panel_long, index = c("id", "year")) 
-a <- between(panel_plm$income)
-
-
-
-data("Hedonic", package = "plm")
-Hed_panel <- pdata.frame(Hedonic, index = c("townid"))
-Hed <- plm(mv~crim, data = Hed_panel, model = "between")
-summary(Hed)
-a <- between(Hed_panel$mv)
-test <- Hedonic %>% group_by(townid) %>% summarise(mean_mv = mean(mv, na.rm=TRUE),
-                                           mean_crim = mean(crim, na.rm=TRUE))
-lm(mean_mv ~ mean_crim, data = test)
